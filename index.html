@@ -612,7 +612,9 @@
             const selectedWeapon = document.querySelector('input[name="weapon"]:checked').value;
             dieDistChart.data.datasets[0].data = diceDistributions[selectedWeapon].probs;
             dieDistChart.update();
-            document.getElementById('weapon-image').src = assetUrls[selectedWeapon];
+            document.getElementById('weapon-img-normalSword').src = assetUrls.normalSword;
+            document.getElementById('weapon-img-morningStar').src = assetUrls.morningStar;
+            document.getElementById('weapon-img-warHammer').src = assetUrls.warHammer;
         }
         
         // --- Simulation Mode Logic ---
@@ -654,7 +656,7 @@
         function toggleAutoRun() {
             const btn = document.getElementById('run-auto');
             if (autoRunInterval) {
-                clearInterval(autoRunInterval); autoRunInterval = null; btn.textContent = '自動で攻撃';
+                clearInterval(autoRunInterval); autoRunInterval = null; btn.textContent = '自動で試行';
                 btn.classList.replace('bg-pink-500', 'bg-green-500');
             } else {
                 autoRunInterval = setInterval(() => runSimulation(100), 50); btn.textContent = '停止';
@@ -664,7 +666,7 @@
         function stopAutoRun() {
             if(autoRunInterval) { clearInterval(autoRunInterval); autoRunInterval = null;
                 const btn = document.getElementById('run-auto');
-                if(btn) { btn.textContent = '自動で攻撃'; btn.classList.replace('bg-pink-500', 'bg-green-500'); }
+                if(btn) { btn.textContent = '自動で試行'; btn.classList.replace('bg-pink-500', 'bg-green-500'); }
             }
         }
 
