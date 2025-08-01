@@ -82,7 +82,7 @@
 
         <!-- Main Content -->
         <main>
-            <!-- Introduction Panel -->
+            <!-- Introduction Panel (NEW) -->
             <div id="introduction-panel" class="bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700 prose prose-invert prose-lg max-w-none">
                 <div class="flex flex-col md:flex-row items-center gap-8">
                     <img id="intro-hero-image" src="" alt="サイコロ勇者のドット絵" class="rounded-lg border-4 border-gray-600 w-36 h-36">
@@ -130,22 +130,19 @@
                     <div id="control-panel-content">
                         <h2 class="text-2xl font-bold mb-6 font-game text-cyan-400">作戦司令室</h2>
                         <div class="mb-6">
-                            <h3 class="text-lg font-bold mb-3 text-cyan-300 flex items-center gap-2">1. 武器を選ぼう <button id="weapon-col-btn" class="column-btn">？</button></h3>
-                            <div class="space-y-2" id="weapon-selector">
-                                <label class="flex items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer"><input type="radio" name="weapon" value="normalSword" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900" checked><span class="ml-3 text-white">ノーマルソード <span class="text-xs text-gray-400">(均等)</span></span></label>
-                                <label class="flex items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer"><input type="radio" name="weapon" value="morningStar" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900"><span class="ml-3 text-white">モーニングスター <span class="text-xs text-gray-400">(1と6に偏る)</span></span></label>
-                                <label class="flex items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer"><input type="radio" name="weapon" value="warHammer" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900"><span class="ml-3 text-white">ウォーハンマー <span class="text-xs text-gray-400">(中央にやや偏る)</span></span></label>
+                            <h3 class="text-lg font-bold mb-3 text-cyan-300 flex items-center gap-2">1. サイコロを選ぼう <button id="weapon-col-btn" class="column-btn">？</button></h3>
+                            <div class="grid grid-cols-3 gap-2" id="weapon-selector">
+                                <label class="flex flex-col items-center p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer border-2 border-transparent"><input type="radio" name="weapon" value="normalSword" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900 sr-only" checked><img id="weapon-img-normalSword" src="" class="w-16 h-16 rounded-md"><span class="mt-1 text-sm text-center">標準サイコロ</span></label>
+                                <label class="flex flex-col items-center p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer border-2 border-transparent"><input type="radio" name="weapon" value="morningStar" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900 sr-only"><img id="weapon-img-morningStar" src="" class="w-16 h-16 rounded-md"><span class="mt-1 text-sm text-center">危険サイコロ</span></label>
+                                <label class="flex flex-col items-center p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer border-2 border-transparent"><input type="radio" name="weapon" value="warHammer" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900 sr-only"><img id="weapon-img-warHammer" src="" class="w-16 h-16 rounded-md"><span class="mt-1 text-sm text-center">安定サイコロ</span></label>
                             </div>
-                            <div class="mt-4 p-4 bg-gray-900 rounded-lg flex gap-4 items-center">
-                                <img id="weapon-image" src="" alt="選択中の武器" class="rounded-lg border-2 border-gray-600 w-20 h-20">
-                                <div class="flex-1 relative h-32 min-w-0">
-                                    <h4 class="text-sm text-center text-gray-400 mb-2">武器のダメージ確率</h4>
-                                    <canvas id="die-dist-chart"></canvas>
-                                </div>
+                            <div class="mt-2 p-2 bg-gray-900 rounded-lg">
+                                <h4 class="text-sm text-center text-gray-400 mb-1">出目の確率</h4>
+                                <div class="relative h-24"><canvas id="die-dist-chart"></canvas></div>
                             </div>
                         </div>
                         <div class="mb-6">
-                            <h3 class="text-lg font-bold mb-3 text-cyan-300 flex items-center gap-2">2. １回の攻撃で振る数 (n) <button id="n-col-btn" class="column-btn">？</button></h3>
+                            <h3 class="text-lg font-bold mb-3 text-cyan-300 flex items-center gap-2">2. 1回の試行で投げる数 (n) <button id="n-col-btn" class="column-btn">？</button></h3>
                             <div id="n-selector" class="flex flex-wrap items-center gap-2">
                                 <!-- Buttons and input are generated by JS -->
                             </div>
@@ -161,17 +158,16 @@
                     <!-- Simulation Mode Panel -->
                     <div id="simulation-mode-panel" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
                         <h2 class="text-2xl font-bold mb-2 font-game text-yellow-400 flex items-center gap-2">シミュレーション記録 <button id="sim-col-btn" class="column-btn text-lg">？</button></h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-center">
-                            <div class="bg-gray-900 p-4 rounded-lg"><div class="text-sm text-gray-400">総攻撃回数</div><div id="total-trials" class="text-2xl font-bold text-yellow-400">0</div></div>
-                            <div class="bg-gray-900 p-4 rounded-lg"><div class="text-sm text-gray-400 flex items-center justify-center gap-2">ダメージ平均 <button id="mean-col-btn" class="column-btn">？</button></div><div id="mean-of-means" class="text-2xl font-bold text-yellow-400">N/A</div></div>
-                            <div class="bg-gray-900 p-4 rounded-lg"><div class="text-sm text-gray-400 flex items-center justify-center gap-2">ダメージのばらつき <button id="stddev-col-btn" class="column-btn">？</button></div><div id="std-dev" class="text-2xl font-bold text-yellow-400">N/A</div></div>
-                             <div class="bg-gray-900 p-4 rounded-lg">
-                                <div class="text-sm text-gray-400">分布の評価</div>
-                                <div class="flex justify-center gap-4 mt-1">
-                                    <p class="text-sm">歪度: <span id="sim-skew-display" class="font-bold">0.00</span></p>
-                                    <p class="text-sm">尖度: <span id="sim-kurt-display" class="font-bold">3.00</span></p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4 text-center">
+                            <div class="bg-gray-900 p-2 rounded-lg"><div class="text-xs text-gray-400">総試行回数</div><div id="total-trials" class="text-xl font-bold text-yellow-400">0</div></div>
+                            <div class="bg-gray-900 p-2 rounded-lg"><div class="text-xs text-gray-400 flex items-center justify-center gap-1">出目の平均 <button id="mean-col-btn" class="column-btn text-xs">？</button></div><div id="mean-of-means" class="text-xl font-bold text-yellow-400">N/A</div></div>
+                            <div class="bg-gray-900 p-2 rounded-lg"><div class="text-xs text-gray-400 flex items-center justify-center gap-1">ばらつき <button id="stddev-col-btn" class="column-btn text-xs">？</button></div><div id="std-dev" class="text-xl font-bold text-yellow-400">N/A</div></div>
+                             <div class="bg-gray-900 p-2 rounded-lg">
+                                <div class="text-xs text-gray-400">分布の評価</div>
+                                <div class="flex justify-center gap-2 mt-1">
+                                    <p class="text-xs">歪度: <span id="sim-skew-display" class="font-bold">0.00</span></p>
+                                    <p class="text-xs">尖度: <span id="sim-kurt-display" class="font-bold">3.00</span></p>
                                 </div>
-                                <p id="sim-normality-feedback" class="text-xs text-gray-500 mt-1 italic">(歪度0, 尖度3が理想)</p>
                             </div>
                         </div>
                         <div id="simulation-log" class="h-24 bg-gray-900 rounded-lg p-2 text-left overflow-y-auto text-base mb-4"></div>
@@ -493,11 +489,11 @@
             let buttonsHtml = '';
             if (currentMode === 'simulation') {
                 buttonsHtml = `
-                    <h3 class="text-lg font-bold mb-3 text-cyan-300">3. 攻撃！</h3>
+                    <h3 class="text-lg font-bold mb-3 text-cyan-300">3. 試行する</h3>
                     <div class="grid grid-cols-2 gap-3 mb-3">
-                        <button id="run-1" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition">1回 攻撃</button>
-                        <button id="run-100" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition hidden">100回 攻撃</button>
-                        <button id="run-auto" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition hidden">自動で攻撃</button>
+                        <button id="run-1" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition">1回 試行</button>
+                        <button id="run-100" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition hidden">100回 試行</button>
+                        <button id="run-auto" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition hidden">自動で試行</button>
                     </div>
                     <button id="unlock-btn" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition mb-2">便利なボタンを解放する？</button>
                     <button id="reset" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">リセット</button>`;
@@ -633,10 +629,6 @@
         function updateSimUI() { 
             updateSimStatistics(); 
             updateDistributionChart(resultsHistogram, simResultsData); 
-            if (simResultsData.length >= 50) {
-                const unlockBtn = document.getElementById('unlock-btn');
-                if (unlockBtn) unlockBtn.classList.remove('hidden');
-            }
         }
         function updateSimStatistics() {
             const n = simResultsData.length;
