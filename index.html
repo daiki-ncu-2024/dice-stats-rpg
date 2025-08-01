@@ -17,6 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
+        /* Custom styles for the game UI */
         body { font-family: 'Inter', sans-serif; }
         .font-game { font-family: 'DotGothic16', sans-serif; }
         .hp-bar-bg { background-color: #4a5568; }
@@ -38,11 +39,14 @@
             font-weight: 600;
             transition: all 0.2s;
             border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .n-button:hover {
             background-color: #4b5563;
         }
-        .n-button-selected {
+        .n-button.n-button-selected {
             background-color: #3b82f6;
             color: white;
             border-color: #60a5fa;
@@ -57,9 +61,21 @@
             font-size: 0.875rem;
             line-height: 1.25rem;
             transition: background-color 0.2s;
+            flex-shrink: 0;
         }
         .column-btn:hover {
             background-color: #6b7280;
+        }
+        input[type="radio"]:checked + img + span {
+            color: #60a5fa;
+        }
+        input[type="radio"]:checked + img {
+            border-color: #60a5fa;
+        }
+        .action-btn:disabled {
+            background-color: #4b5563;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
     </style>
 </head>
@@ -73,19 +89,19 @@
 
         <!-- Mode Selector -->
         <div class="flex justify-center mb-6 border-b border-gray-700">
-            <button id="intro-mode-btn" class="font-game py-2 px-6 text-lg btn-active">はじめに</button>
-            <button id="hint-mode-btn" class="font-game py-2 px-6 text-lg btn-inactive">ヒント</button>
-            <button id="sim-mode-btn" class="font-game py-2 px-6 text-lg btn-inactive">シミュレーション</button>
-            <button id="survival-mode-btn" class="font-game py-2 px-6 text-lg btn-inactive">サバイバル</button>
-            <button id="mission-mode-btn" class="font-game py-2 px-6 text-lg btn-inactive">ミッション</button>
+            <button id="intro-mode-btn" class="font-game py-2 px-6 text-lg">はじめに</button>
+            <button id="hint-mode-btn" class="font-game py-2 px-6 text-lg">ヒント</button>
+            <button id="sim-mode-btn" class="font-game py-2 px-6 text-lg">シミュレーション</button>
+            <button id="survival-mode-btn" class="font-game py-2 px-6 text-lg">サバイバル</button>
+            <button id="mission-mode-btn" class="font-game py-2 px-6 text-lg">ミッション</button>
         </div>
 
         <!-- Main Content -->
         <main>
-            <!-- Introduction Panel (NEW) -->
-            <div id="introduction-panel" class="bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700 prose prose-invert prose-lg max-w-none">
+            <!-- Introduction Panel -->
+            <div id="introduction-panel" class="hidden bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700 prose prose-invert prose-lg max-w-none">
                 <div class="flex flex-col md:flex-row items-center gap-8">
-                    <img id="intro-hero-image" src="" alt="サイコロ勇者のドット絵" class="rounded-lg border-4 border-gray-600 w-36 h-36">
+                    <img id="intro-hero-image" src="./assets/hero-normal.png" alt="サイコロ勇者のドット絵" class="rounded-lg border-4 border-gray-600 w-36 h-36">
                     <div>
                         <h2 class="font-game text-yellow-300">ようこそ、勇者よ！</h2>
                         <p>このゲームは、RPGを楽しみながら統計学の最も重要で美しい定理の一つ「中心極限定理」を体感できる学習ツールです。</p>
@@ -99,7 +115,7 @@
                 <h3 class="font-game text-cyan-300 mt-6">操作方法</h3>
                 <ol>
                     <li><strong>モード選択:</strong> 上のタブからプレイしたいモードを選びます。</li>
-                    <li><strong>武器を選ぶ:</strong> それぞれ出やすい目が違う3種類の武器から1つ選びます。</li>
+                    <li><strong>サイコロを選ぶ:</strong> それぞれ出やすい目が違う3種類のサイコロから1つ選びます。</li>
                     <li><strong>振る数(n)を決める:</strong> 1回の攻撃でサイコロを何個振るか（サンプルサイズ）を決めます。<strong>これが最重要！</strong></li>
                     <li><strong>攻撃！:</strong> ボタンを押して敵を攻撃！あなたの戦いの記録が右のグラフに刻まれていきます。</li>
                 </ol>
@@ -113,13 +129,13 @@
                 <ul>
                     <li>正規分布に近づけると、サバイバルでは攻撃力と回復力が、ミッションでは攻撃力が上がります。</li>
                     <li>`n`を大きくすると、ダメージの分布は正規分布に近づけることができます。</li>
-                    <li>実は、どの武器を使っても`n`が大きければ、ダメージの「ばらつき」は小さくなり、結果は安定します。</li>
+                    <li>実は、どのサイコロを使っても`n`が大きければ、ダメージの「ばらつき」は小さくなり、結果は安定します。</li>
                     <li>究極の安定を求めるなら...`n`を999にしちゃおう！</li>
                 </ul>
 
                 <h3 class="font-game text-cyan-300 mt-6">開発者より (裏話)</h3>
                 <ul>
-                    <li>このゲームは、`n`を大きくすると、どんな分布（どんな武器）でも標本平均の分布が正規分布に近似できる、という中心極限定理の強力さを体感してほしくて作成しました。</li>
+                    <li>このゲームは、`n`を大きくすると、どんな分布（どんなサイコロ）でも標本平均の分布が正規分布に近似できる、という中心極限定理の強力さを体感してほしくて作成しました。</li>
                     <li>ゲームの核は`n`の選択にあります。最終的にはボタンを連打するだけになってしまうかもしれませんが、その裏にある統計学の面白さを少しでも感じて楽しんでいただければ幸いです！</li>
                 </ul>
             </div>
@@ -132,9 +148,9 @@
                         <div class="mb-6">
                             <h3 class="text-lg font-bold mb-3 text-cyan-300 flex items-center gap-2">1. サイコロを選ぼう <button id="weapon-col-btn" class="column-btn">？</button></h3>
                             <div class="grid grid-cols-3 gap-2" id="weapon-selector">
-                                <label class="flex flex-col items-center p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer border-2 border-transparent"><input type="radio" name="weapon" value="normalSword" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900 sr-only" checked><img id="weapon-img-normalSword" src="" class="w-16 h-16 rounded-md"><span class="mt-1 text-sm text-center">標準サイコロ</span></label>
-                                <label class="flex flex-col items-center p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer border-2 border-transparent"><input type="radio" name="weapon" value="morningStar" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900 sr-only"><img id="weapon-img-morningStar" src="" class="w-16 h-16 rounded-md"><span class="mt-1 text-sm text-center">危険サイコロ</span></label>
-                                <label class="flex flex-col items-center p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer border-2 border-transparent"><input type="radio" name="weapon" value="warHammer" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900 sr-only"><img id="weapon-img-warHammer" src="" class="w-16 h-16 rounded-md"><span class="mt-1 text-sm text-center">安定サイコロ</span></label>
+                                <label class="flex flex-col items-center p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer border-2 border-transparent"><input type="radio" name="weapon" value="normalSword" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900 sr-only" checked><img src="./assets/weapon-sword.png" class="w-16 h-16 rounded-md"><span class="mt-1 text-sm text-center">標準サイコロ</span></label>
+                                <label class="flex flex-col items-center p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer border-2 border-transparent"><input type="radio" name="weapon" value="morningStar" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900 sr-only"><img src="./assets/weapon-morningstar.png" class="w-16 h-16 rounded-md"><span class="mt-1 text-sm text-center">危険サイコロ</span></label>
+                                <label class="flex flex-col items-center p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition cursor-pointer border-2 border-transparent"><input type="radio" name="weapon" value="warHammer" class="form-radio h-5 w-5 text-cyan-500 bg-gray-900 sr-only"><img src="./assets/weapon-warhammer.png" class="w-16 h-16 rounded-md"><span class="mt-1 text-sm text-center">安定サイコロ</span></label>
                             </div>
                             <div class="mt-2 p-2 bg-gray-900 rounded-lg">
                                 <h4 class="text-sm text-center text-gray-400 mb-1">出目の確率</h4>
@@ -181,7 +197,7 @@
                             <h2 class="text-2xl font-bold mb-6 font-game text-red-400 flex items-center justify-center gap-2">サバイバルモード <button id="survival-col-btn" class="column-btn text-lg">？</button></h2>
                             <p class="text-gray-300 mb-4">次々と現れるモンスターを倒し、どこまで生き残れるか挑戦しよう！</p>
                             <p class="text-gray-400 mb-2">正規分布の形に近ければ<strong class="bonus-text">攻撃力と回復力</strong>が上がるぞ！</p>
-                            <p class="text-gray-400 mb-6">左の司令室で武器と戦術を選び、下のボタンでゲームを開始してください。</p>
+                            <p class="text-gray-400 mb-6">左の司令室でサイコロと戦術を選び、下のボタンでゲームを開始してください。</p>
                         </div>
                         <div id="survival-game-screen" class="hidden text-center">
                             <div class="flex justify-between items-start mb-2">
@@ -197,7 +213,7 @@
                             </div>
                             <div class="flex justify-around items-end mb-4">
                                 <div class="w-1/3 text-center">
-                                    <img id="survival-hero-image" src="" alt="勇者" class="mx-auto mb-2 rounded-lg w-24 h-24">
+                                    <img id="survival-hero-image" src="./assets/hero-normal.png" alt="勇者" class="mx-auto mb-2 rounded-lg w-24 h-24">
                                     <h3 class="text-xl font-bold text-blue-300">勇者</h3>
                                     <div class="w-full hp-bar-bg rounded-full h-5 mt-1 border-2 border-gray-600"><div id="player-hp-bar" class="hp-bar-player-fill h-full rounded-full"></div></div>
                                     <p id="player-hp-text" class="text-xs mt-1"></p>
@@ -236,11 +252,11 @@
                              </div>
                             <div class="flex justify-around items-end mb-4">
                                 <div class="w-1/3 text-center">
-                                     <img id="mission-hero-image" src="" alt="勇者" class="mx-auto mb-2 rounded-lg w-24 h-24">
+                                     <img id="mission-hero-image" src="./assets/hero-normal.png" alt="勇者" class="mx-auto mb-2 rounded-lg w-24 h-24">
                                 </div>
                                 <div class="text-2xl font-bold font-game">VS</div>
                                 <div class="w-1/3 text-center">
-                                    <img id="mission-golem-image" src="" alt="キングゴーレム" class="mx-auto mb-2 rounded-lg w-24 h-24">
+                                    <img id="mission-golem-image" src="./assets/golem-king-normal.png" alt="キングゴーレム" class="mx-auto mb-2 rounded-lg w-24 h-24">
                                     <h3 id="mission-monster-name" class="text-xl font-bold text-yellow-300">キングゴーレム</h3>
                                     <div class="w-full hp-bar-bg rounded-full h-5 mt-1 border-2 border-gray-600"><div id="mission-monster-hp-bar" class="hp-bar-fill h-full rounded-full"></div></div>
                                     <p id="mission-monster-hp-text" class="text-xs mt-1">120 / 120</p>
@@ -283,793 +299,891 @@
         </div>
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- ASSET URLS ---
-
-        const assetUrls = {
-            hero: {
-                normal: './assets/hero-normal.png',
-                hurt: './assets/hero-hurt.png',
-                danger: './assets/hero-danger.png'
+    <script type="module">
+        // =================================================================================
+        // CONFIGURATION
+        // All static configuration for the game.
+        // =================================================================================
+        const CONFIG = {
+            INITIAL_N: 30,
+            N_VALUES: [1, 2, 30],
+            MAX_N: 999,
+            PLAYER_HP: 100,
+            MISSION_HP: 120,
+            MISSION_TURNS: 30,
+            ACTION_COOLDOWN: 500, // ms
+            DICE_OUTCOMES: [1, 2, 3, 4, 5, 6],
+            BONUS_MULTIPLIER: {
+                ATTACK: 3,
+                HEAL: 5,
             },
-            slime_1: { 
-                name: "スライム",
-                normal: './assets/slime-green-normal.png',
-                hurt: './assets/slime-green-hurt.png',
-                danger: './assets/slime-green-danger.png'
-            },
-            slime_2: { 
-                name: "ホーンスライム",
-                normal: './assets/slime-blue-normal.png',
-                hurt: './assets/slime-blue-hurt.png',
-                danger: './assets/slime-blue-danger.png'
-            },
-            slime_3: { 
-                name: "スライムキング",
-                normal: './assets/slime-king-normal.png',
-                hurt: './assets/slime-king-hurt.png',
-                danger: './assets/slime-king-danger.png'
-            },
-            golem: {
-                name: "キングゴーレム",
-                normal: './assets/golem-king-normal.png',
-                hurt: './assets/golem-king-hurt.png',
-                danger: './assets/golem-king-danger.png'
-            },
-            normalSword: './assets/weapon-sword.png',
-            morningStar: './assets/weapon-morningstar.png',
-            warHammer: './assets/weapon-warhammer.png'
-        };
-
-        // --- DOM Element References ---
-        const modeButtons = {
-            introduction: document.getElementById('intro-mode-btn'),
-            hint: document.getElementById('hint-mode-btn'),
-            simulation: document.getElementById('sim-mode-btn'),
-            survival: document.getElementById('survival-mode-btn'),
-            mission: document.getElementById('mission-mode-btn'),
-        };
-        const introductionPanel = document.getElementById('introduction-panel');
-        const hintPanel = document.getElementById('hint-panel');
-        const gameContentContainer = document.getElementById('game-content-container');
-        const panels = {
-            simulation: document.getElementById('simulation-mode-panel'),
-            survival: document.getElementById('survival-mode-panel'),
-            mission: document.getElementById('mission-mode-panel'),
-        };
-        const weaponSelector = document.getElementById('weapon-selector');
-        const nSelector = document.getElementById('n-selector');
-        const actionButtonsContainer = document.getElementById('action-buttons');
-        
-        // Sim Panel
-        const totalTrialsEl = document.getElementById('total-trials');
-        const meanOfMeansEl = document.getElementById('mean-of-means');
-        const stdDevEl = document.getElementById('std-dev');
-        const simSkewDisplay = document.getElementById('sim-skew-display');
-        const simKurtDisplay = document.getElementById('sim-kurt-display');
-        const simNormalityFeedback = document.getElementById('sim-normality-feedback');
-        const simulationLog = document.getElementById('simulation-log');
-
-        // Survival Panel
-        const survivalBonusDisplay = document.getElementById('survival-bonus-display');
-        const survivalSkewDisplay = document.getElementById('survival-skew-display');
-        const survivalKurtDisplay = document.getElementById('survival-kurt-display');
-        const survivalTrialCount = document.getElementById('survival-trial-count');
-        const waveCounterEl = document.getElementById('wave-counter');
-        const monsterImageEl = document.getElementById('monster-image');
-        const monsterNameEl = document.getElementById('monster-name');
-        const monsterHpBar = document.getElementById('monster-hp-bar');
-        const monsterHpText = document.getElementById('monster-hp-text');
-        const playerHpBar = document.getElementById('player-hp-bar');
-        const playerHpText = document.getElementById('player-hp-text');
-        const combatLog = document.getElementById('combat-log');
-        const survivalGameOverModal = document.getElementById('survival-game-over-modal');
-        const finalScoreEl = document.getElementById('final-score');
-        const gameOverAnalysisEl = document.getElementById('game-over-analysis');
-        const restartSurvivalBtn = document.getElementById('restart-survival-btn');
-        
-        // Mission Panel
-        const missionBonusDisplay = document.getElementById('mission-bonus-display');
-        const missionSkewDisplay = document.getElementById('mission-skew-display');
-        const missionKurtDisplay = document.getElementById('mission-kurt-display');
-        const turnCounterEl = document.getElementById('turn-counter');
-        const missionMonsterHpBar = document.getElementById('mission-monster-hp-bar');
-        const missionMonsterHpText = document.getElementById('mission-monster-hp-text');
-        const missionCombatLog = document.getElementById('mission-combat-log');
-        const missionResultModal = document.getElementById('mission-result-modal');
-        const missionResultBorder = document.getElementById('mission-result-border');
-        const missionResultTitle = document.getElementById('mission-result-title');
-        const restartMissionBtn = document.getElementById('restart-mission-btn');
-
-        // Column Modal
-        const columnModal = document.getElementById('column-modal');
-        const columnText = document.getElementById('column-text');
-        const closeColumnBtn = document.getElementById('close-column-btn');
-        const weaponColBtn = document.getElementById('weapon-col-btn');
-        const nColBtn = document.getElementById('n-col-btn');
-        const simColBtn = document.getElementById('sim-col-btn');
-        const survivalColBtn = document.getElementById('survival-col-btn');
-        const missionColBtn = document.getElementById('mission-col-btn');
-        const meanColBtn = document.getElementById('mean-col-btn');
-        const stddevColBtn = document.getElementById('stddev-col-btn');
-
-        // --- State Variables ---
-        let currentMode = 'introduction';
-        let simResultsData = [];
-        let autoRunInterval = null;
-        const diceOutcomes = [1, 2, 3, 4, 5, 6];
-        const diceDistributions = {
-            normalSword: { label: 'ノーマルソード', probs: [1/6, 1/6, 1/6, 1/6, 1/6, 1/6] },
-            morningStar: { label: 'モーニングスター', probs: [0.3, 0.15, 0.1, 0.05, 0, 0.4] },
-            warHammer: { label: 'ウォーハンマー', probs: [0.1, 0.083, 0.3, 0.3, 0.167, 0.05] }
-        };
-        const nValues = [1, 2, 30];
-        let currentN = 30;
-        let survival_state = {};
-        const MISSION_HP = 120;
-        const MISSION_TURNS = 30;
-        let mission_state = {};
-
-        // --- Chart.js Instances ---
-        let dieDistChart, resultsHistogram, gameOverChart, missionResultChart, liveSurvivalChart, liveMissionChart;
-        
-        // --- WEAPON/MONSTER NAMES & ASSETS ---
-        const monsterAssets = {
-            slime_1: { name: "スライム", ...assetUrls.slime_1 },
-            slime_2: { name: "ホーンスライム", ...assetUrls.slime_2 },
-            slime_3: { name: "スライムキング", ...assetUrls.slime_3 }
-        };
-
-        // --- Core Functions ---
-        function initializeCharts() {
-            const commonChartOptions = {
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#9ca3af', font: { size: 10 } } },
-                    x: { type: 'linear', grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#9ca3af', font: { size: 10 } } }
+            ASSETS: {
+                HERO: {
+                    normal: './assets/hero-normal.png',
+                    hurt: './assets/hero-hurt.png',
+                    danger: './assets/hero-danger.png'
                 },
-                maintainAspectRatio: false
-            };
-
-            dieDistChart = new Chart(document.getElementById('die-dist-chart').getContext('2d'), { 
-                type: 'bar', 
-                data: { labels: diceOutcomes, datasets: [{ data: [], backgroundColor: 'rgba(56, 189, 248, 0.6)' }] }, 
-                options: { ...commonChartOptions, scales: { ...commonChartOptions.scales, x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 10 } } } } }
-            });
-            
-            const createMixedChart = (canvasId, barColor = 'rgba(251, 191, 36, 0.6)') => new Chart(document.getElementById(canvasId).getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [
-                        { label: '度数', data: [], backgroundColor: barColor, barPercentage: 1.0, categoryPercentage: 1.0 },
-                        { label: '理論上の正規分布', data: [], type: 'line', borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 0, tension: 0.1 },
-                        { label: '平均(μ)', data: [], type: 'scatter', backgroundColor: 'rgba(251, 191, 36, 1)', pointRadius: 6, pointStyle: 'triangle', rotation: 0 },
-                        { label: '±1σ', data: [], type: 'scatter', backgroundColor: 'rgba(74, 222, 128, 1)', pointRadius: 5, pointStyle: 'circle' },
-                        { label: '±2σ', data: [], type: 'scatter', backgroundColor: 'rgba(251, 146, 60, 1)', pointRadius: 5, pointStyle: 'circle' },
-                        { label: '±3σ', data: [], type: 'scatter', backgroundColor: 'rgba(239, 68, 68, 1)', pointRadius: 5, pointStyle: 'circle' }
-                    ]
+                MONSTERS: {
+                    SLIME_GREEN: { 
+                        name: "スライム",
+                        normal: './assets/slime-green-normal.png',
+                        hurt: './assets/slime-green-hurt.png',
+                        danger: './assets/slime-green-danger.png'
+                    },
+                    SLIME_BLUE: { 
+                        name: "ホーンスライム",
+                        normal: './assets/slime-blue-normal.png',
+                        hurt: './assets/slime-blue-hurt.png',
+                        danger: './assets/slime-blue-danger.png'
+                    },
+                    SLIME_KING: { 
+                        name: "スライムキング",
+                        normal: './assets/slime-king-normal.png',
+                        hurt: './assets/slime-king-hurt.png',
+                        danger: './assets/slime-king-danger.png'
+                    },
+                    GOLEM_KING: {
+                        name: "キングゴーレム",
+                        normal: './assets/golem-king-normal.png',
+                        hurt: './assets/golem-king-hurt.png',
+                        danger: './assets/golem-king-danger.png'
+                    }
                 },
-                options: commonChartOptions
-            });
-
-            resultsHistogram = createMixedChart('results-histogram');
-            gameOverChart = createMixedChart('game-over-chart');
-            missionResultChart = createMixedChart('mission-result-chart', 'rgba(192, 132, 252, 0.6)');
-            liveSurvivalChart = createMixedChart('live-survival-chart', 'rgba(239, 68, 68, 0.6)');
-            liveMissionChart = createMixedChart('live-mission-chart', 'rgba(168, 85, 247, 0.6)');
-        }
-
-        function switchMode(mode) {
-            currentMode = mode;
-            
-            Object.keys(modeButtons).forEach(key => {
-                modeButtons[key].classList.toggle('btn-active', key === mode);
-                modeButtons[key].classList.toggle('btn-inactive', key !== mode);
-            });
-            
-            const allPanels = [introductionPanel, gameContentContainer, hintPanel];
-            allPanels.forEach(p => p.classList.add('hidden'));
-
-            if (mode === 'introduction') {
-                introductionPanel.classList.remove('hidden');
-            } else if (mode === 'hint') {
-                hintPanel.classList.remove('hidden');
-            } else {
-                gameContentContainer.classList.remove('hidden');
-                Object.keys(panels).forEach(key => {
-                    panels[key].classList.toggle('hidden', key !== mode);
-                });
-                renderActionButtons();
-            }
-        }
-
-        function renderActionButtons() {
-            actionButtonsContainer.innerHTML = '';
-            let buttonsHtml = '';
-            if (currentMode === 'simulation') {
-                buttonsHtml = `
-                    <h3 class="text-lg font-bold mb-3 text-cyan-300">3. 試行する</h3>
-                    <div class="grid grid-cols-2 gap-3 mb-3">
-                        <button id="run-1" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition">1回 試行</button>
-                        <button id="run-100" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition hidden">100回 試行</button>
-                        <button id="run-auto" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition hidden">自動で試行</button>
-                    </div>
-                    <button id="unlock-btn" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition mb-2">便利なボタンを解放する？</button>
-                    <button id="reset" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">リセット</button>`;
-            } else if (currentMode === 'survival') {
-                buttonsHtml = `<button id="start-survival-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl mt-4">ゲーム開始！</button>
-                               <button id="survival-attack-btn" class="w-full bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold py-3 px-4 rounded-lg transition text-xl mt-4 hidden">攻撃！</button>`;
-            } else if (currentMode === 'mission') {
-                buttonsHtml = `<button id="start-mission-btn" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl mt-4">ミッション開始！</button>
-                               <button id="mission-attack-btn" class="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-gray-500 text-white font-bold py-3 px-4 rounded-lg transition text-xl mt-4 hidden">攻撃！</button>`;
-            }
-            actionButtonsContainer.innerHTML = buttonsHtml;
-            attachActionListeners();
-        }
-        
-        function attachActionListeners() {
-            if (currentMode === 'simulation') {
-                document.getElementById('run-1').addEventListener('click', () => runSimulation(1));
-                const run100Btn = document.getElementById('run-100');
-                if (run100Btn) run100Btn.addEventListener('click', () => runSimulation(100));
-                const runAutoBtn = document.getElementById('run-auto');
-                if (runAutoBtn) runAutoBtn.addEventListener('click', toggleAutoRun);
-                document.getElementById('reset').addEventListener('click', resetSimulation);
-                document.getElementById('unlock-btn').addEventListener('click', (e) => {
-                    e.target.classList.add('hidden');
-                    document.getElementById('run-100').classList.remove('hidden');
-                    document.getElementById('run-auto').classList.remove('hidden');
-                });
-            } else if (currentMode === 'survival') {
-                document.getElementById('start-survival-btn').addEventListener('click', startSurvival);
-                document.getElementById('survival-attack-btn').addEventListener('click', survivalAttack);
-            } else if (currentMode === 'mission') {
-                document.getElementById('start-mission-btn').addEventListener('click', startMission);
-                document.getElementById('mission-attack-btn').addEventListener('click', missionAttack);
-            }
-        }
-
-        // --- Shared Logic ---
-        function calculateMeanDamage() {
-            const sampleSize = currentN;
-            const selectedWeapon = document.querySelector('input[name="weapon"]:checked').value;
-            const probs = diceDistributions[selectedWeapon].probs;
-            let currentSample = Array.from({ length: sampleSize }, () => rollWeightedDie(probs));
-            return currentSample.reduce((a, b) => a + b, 0) / sampleSize;
-        }
-        
-        function rollWeightedDie(probs) {
-            const rand = Math.random();
-            let cumulativeProb = 0;
-            for (let i = 0; i < probs.length; i++) {
-                cumulativeProb += probs[i];
-                if (rand < cumulativeProb) return diceOutcomes[i];
-            }
-            return diceOutcomes[diceOutcomes.length - 1];
-        }
-
-        function updateDistributionChart(chartInstance, data) {
-            const n_value = currentN;
-            const { mean, stdDev } = calculateDistributionStats(data);
-
-            let chartMin, chartMax, numBins;
-
-            if (data.length < 50) {
-                chartMin = 1;
-                chartMax = 6;
-            } else {
-                const range = Math.max(0.5, 6 * stdDev);
-                chartMin = Math.max(1, mean - range / 2);
-                chartMax = Math.min(6, mean + range / 2);
-            }
-            
-            numBins = n_value <= 5 ? 30 : 100;
-            
-            chartInstance.options.scales.x.min = chartMin;
-            chartInstance.options.scales.x.max = chartMax;
-            
-            const binWidth = (chartMax - chartMin) / numBins;
-            const labels = Array.from({length: numBins}, (_, i) => (chartMin + (i + 0.5) * binWidth));
-            
-            const bins = new Array(numBins).fill(0);
-            data.forEach(value => {
-                let binIndex = Math.floor((value - chartMin) / binWidth);
-                if (binIndex === numBins) binIndex = numBins - 1;
-                if (binIndex >= 0 && binIndex < numBins) bins[binIndex]++;
-            });
-
-            chartInstance.data.labels = labels.map(l => l.toFixed(2));
-            chartInstance.data.datasets[0].data = bins;
-            
-            const selectedWeapon = document.querySelector('input[name="weapon"]:checked').value;
-            const { mu, sigma } = calculateTheoreticalStats(diceDistributions[selectedWeapon].probs);
-            const sampleMeanSigma = sigma / Math.sqrt(n_value);
-
-            if (sampleMeanSigma > 0 && data.length > 0) {
-                const normalCurveData = labels.map(x => {
-                    const exponent = -Math.pow(x - mu, 2) / (2 * Math.pow(sampleMeanSigma, 2));
-                    const pdf = (1 / (sampleMeanSigma * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
-                    return pdf * data.length * binWidth;
-                });
-                chartInstance.data.datasets[1].data = normalCurveData;
-                chartInstance.data.datasets[2].data = [{x: mean, y: 0}];
-                chartInstance.data.datasets[3].data = [{x: mean + stdDev, y: 0}, {x: mean - stdDev, y: 0}];
-                chartInstance.data.datasets[4].data = [{x: mean + 2 * stdDev, y: 0}, {x: mean - 2 * stdDev, y: 0}];
-                chartInstance.data.datasets[5].data = [{x: mean + 3 * stdDev, y: 0}, {x: mean - 3 * stdDev, y: 0}];
-            } else {
-                 chartInstance.data.datasets[1].data = [];
-                 chartInstance.data.datasets[2].data = [];
-                 chartInstance.data.datasets[3].data = [];
-                 chartInstance.data.datasets[4].data = [];
-                 chartInstance.data.datasets[5].data = [];
-            }
-            
-            chartInstance.update();
-        }
-
-        function updateWeaponDisplay() {
-            const selectedWeapon = document.querySelector('input[name="weapon"]:checked').value;
-            dieDistChart.data.datasets[0].data = diceDistributions[selectedWeapon].probs;
-            dieDistChart.update();
-            document.getElementById('weapon-img-normalSword').src = assetUrls.normalSword;
-            document.getElementById('weapon-img-morningStar').src = assetUrls.morningStar;
-            document.getElementById('weapon-img-warHammer').src = assetUrls.warHammer;
-        }
-        
-        // --- Simulation Mode Logic ---
-        function runSimulation(numTrials) { 
-            for (let i = 0; i < numTrials; i++) {
-                const damage = calculateMeanDamage();
-                simResultsData.push(damage); 
-                if (numTrials === 1) {
-                    addCombatLog(simulationLog, `${damage.toFixed(2)} のダメージ！`, 'text-yellow-300');
+                WEAPONS: {
+                    normalSword: './assets/weapon-sword.png',
+                    morningStar: './assets/weapon-morningstar.png',
+                    warHammer: './assets/weapon-warhammer.png'
+                },
+                ICONS: {
+                    n1: './assets/icon-n1.png',
+                    n2: './assets/icon-n2.png',
+                    n30: './assets/icon-n30.png'
+                    n100: './assets/icon-n100.png'
                 }
+            },
+            DICE_DISTRIBUTIONS: {
+                normalSword: { label: '標準サイコロ', probs: [1/6, 1/6, 1/6, 1/6, 1/6, 1/6] },
+                morningStar: { label: '危険サイコロ', probs: [0.3, 0.15, 0.1, 0.05, 0, 0.4] },
+                warHammer: { label: '安定サイコロ', probs: [0.1, 0.083, 0.3, 0.3, 0.167, 0.05] }
+            },
+            COLUMN_TEXTS: {
+                weapon: "どのサイコロも一見出やすさが異なりますが、期待値（平均）は同じ3.5になるように調整されています。",
+                n: "nを大きくすればするほど、平均ダメージの分布は理論上の正規分布（赤い線）に近づいていきます。",
+                sim: "敵はいないので、心ゆくまでサイコロとnの組み合わせを試し、グラフがどう変化するかを観察してみましょう！",
+                survival: "君の統計学の知識が生存の鍵だ。分布を整えてボーナスを稼ぎ、どこまで生き残れるか挑戦しよう！",
+                mission: "限られたターンの中で、いかに分布を整えて大ダメージを与えるかが攻略の鍵となります。",
+                mean: "ダメージ平均は、これまでの君の全攻撃の平均値だ。nを大きくすると、一回ごとのダメージがこの値に近づいていくぞ。",
+                stddev: "ばらつき（標準偏差）は、攻撃ダメージがどれだけ平均から離れているかを示す。この値が小さいほど、攻撃が安定している証拠だ！"
             }
-            updateSimUI(); 
-        }
-        function updateSimUI() { 
-            updateSimStatistics(); 
-            updateDistributionChart(resultsHistogram, simResultsData); 
-        }
-        function updateSimStatistics() {
-            const n = simResultsData.length;
-            totalTrialsEl.textContent = n;
-            if (n === 0) { meanOfMeansEl.textContent = 'N/A'; stdDevEl.textContent = 'N/A'; return; }
-            const { mean, stdDev, skewness, kurtosis } = calculateDistributionStats(simResultsData);
-            meanOfMeansEl.textContent = mean.toFixed(2);
-            stdDevEl.textContent = stdDev.toFixed(2);
-            updateStatDisplay(null, null, simSkewDisplay, skewness, simKurtDisplay, kurtosis, simNormalityFeedback);
-        }
-        function resetSimulation() { 
-            stopAutoRun(); 
-            simResultsData = []; 
-            updateSimUI(); 
-            simulationLog.innerHTML = '';
-            const unlockBtn = document.getElementById('unlock-btn');
-            if(unlockBtn) unlockBtn.classList.remove('hidden');
-            const run100Btn = document.getElementById('run-100');
-            if(run100Btn) run100Btn.classList.add('hidden');
-            const runAutoBtn = document.getElementById('run-auto');
-            if(runAutoBtn) runAutoBtn.classList.add('hidden');
-        }
-        function toggleAutoRun() {
-            const btn = document.getElementById('run-auto');
-            if (autoRunInterval) {
-                clearInterval(autoRunInterval); autoRunInterval = null; btn.textContent = '自動で試行';
-                btn.classList.replace('bg-pink-500', 'bg-green-500');
-            } else {
-                autoRunInterval = setInterval(() => runSimulation(100), 50); btn.textContent = '停止';
-                btn.classList.replace('bg-green-500', 'bg-pink-500');
-            }
-        }
-        function stopAutoRun() {
-            if(autoRunInterval) { clearInterval(autoRunInterval); autoRunInterval = null;
-                const btn = document.getElementById('run-auto');
-                if(btn) { btn.textContent = '自動で試行'; btn.classList.replace('bg-pink-500', 'bg-green-500'); }
-            }
-        }
+        };
 
-        // --- Survival Mode Logic ---
-        function startSurvival() {
-            survival_state = { wave: 1, player: { maxHp: 100, currentHp: 100 }, monster: {}, damageLog: [] };
-            document.getElementById('start-survival-btn').classList.add('hidden');
-            document.getElementById('survival-attack-btn').classList.remove('hidden');
-            document.getElementById('survival-start-screen').classList.add('hidden');
-            document.getElementById('survival-game-screen').classList.remove('hidden');
-            document.getElementById('survival-attack-btn').disabled = false;
-            updateDistributionChart(liveSurvivalChart, []);
-            setupNextWave();
-        }
-        function setupNextWave() {
-            const wave = survival_state.wave;
-            const monsterAsset = wave < 5 ? monsterAssets.slime_1 : (wave < 10 ? monsterAssets.slime_2 : monsterAssets.slime_3);
-            
-            survival_state.monster = {
-                name: monsterAsset.name,
-                maxHp: Math.floor(30 * Math.pow(1.12, wave)),
-                currentHp: Math.floor(30 * Math.pow(1.12, wave)),
-                attack: Math.floor(3 * Math.pow(1.06, wave)),
-                asset: monsterAsset
-            };
-            monsterImageEl.src = monsterAsset.normal;
-            waveCounterEl.textContent = wave;
-            updateSurvivalUI();
-            document.getElementById('survival-attack-btn').disabled = false;
-            addCombatLog(combatLog, `WAVE ${wave} 開始！ ${survival_state.monster.name} が現れた！`, 'text-yellow-400');
-        }
-        function survivalAttack() {
-            const bonus = calculateNormalityBonus(survival_state.damageLog);
-            const baseDamage = calculateMeanDamage();
-            const finalDamage = baseDamage * bonus;
-            survival_state.damageLog.push(baseDamage);
-            survival_state.monster.currentHp -= finalDamage;
-            
-            addCombatLog(combatLog, `勇者の攻撃！ ${baseDamage.toFixed(1)} のダメージ！`, 'text-blue-300');
-            if (bonus > 1.1) {
-                 addCombatLog(combatLog, `正規分布ボーナス！ ダメージが ${bonus.toFixed(2)}倍に！ (最終: ${finalDamage.toFixed(1)})`, 'bonus-text');
-            } else if (bonus < 0.9) {
-                 addCombatLog(combatLog, `分布が乱れている！ ダメージが ${bonus.toFixed(2)}倍に減少！ (最終: ${finalDamage.toFixed(1)})`, 'penalty-text');
+        // =================================================================================
+        // UTILITY FUNCTIONS
+        // General helper functions used throughout the application.
+        // =================================================================================
+        const Utils = {
+            calculateDistributionStats(data) {
+                const n = data.length;
+                if (n < 2) return { mean: data[0] || 0, stdDev: 0, skewness: 0, kurtosis: 3 };
+                const mean = data.reduce((a, b) => a + b, 0) / n;
+                const stdDev = Math.sqrt(data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / n);
+                if (stdDev === 0 || n < 3) return { mean, stdDev, skewness: 0, kurtosis: 3 };
+                const m3 = data.reduce((acc, val) => acc + Math.pow(val - mean, 3), 0) / n;
+                const m4 = data.reduce((acc, val) => acc + Math.pow(val - mean, 4), 0) / n;
+                const skewness = m3 / Math.pow(stdDev, 3);
+                const kurtosis = m4 / Math.pow(stdDev, 4);
+                return { mean, stdDev, skewness, kurtosis };
+            },
+            calculateNormalityBonus(data, isHeal = false) {
+                if (data.length < 5) return 1.0; 
+                const { skewness, kurtosis } = this.calculateDistributionStats(data);
+                const error = Math.pow(skewness, 2) + Math.pow(kurtosis - 3, 2);
+                const multiplier = isHeal ? CONFIG.BONUS_MULTIPLIER.HEAL : CONFIG.BONUS_MULTIPLIER.ATTACK;
+                return Math.min(multiplier, multiplier * Math.exp(-error));
+            },
+            rollWeightedDie(probs) {
+                const rand = Math.random();
+                let cumulativeProb = 0;
+                for (let i = 0; i < probs.length; i++) {
+                    cumulativeProb += probs[i];
+                    if (rand < cumulativeProb) return CONFIG.DICE_OUTCOMES[i];
+                }
+                return CONFIG.DICE_OUTCOMES[CONFIG.DICE_OUTCOMES.length - 1];
+            },
+            getCharacterImage(characterAsset, currentHp, maxHp) {
+                const percentage = (currentHp / maxHp) * 100;
+                if (percentage < 30) return characterAsset.danger;
+                if (percentage < 70) return characterAsset.hurt;
+                return characterAsset.normal;
+            }
+        };
+
+        // =================================================================================
+        // CHART MANAGER
+        // Handles all operations related to Chart.js.
+        // =================================================================================
+        class ChartManager {
+            constructor() {
+                this.charts = {};
             }
 
-            updateDistributionChart(liveSurvivalChart, survival_state.damageLog);
-            updateSurvivalUI();
+            initialize() {
+                const commonChartOptions = {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#9ca3af', font: { size: 10 } } },
+                        x: { type: 'linear', min: 1, max: 6, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#9ca3af', font: { size: 10 } } }
+                    },
+                    maintainAspectRatio: false
+                };
 
-            if (survival_state.monster.currentHp <= 0) {
-                document.getElementById('survival-attack-btn').disabled = true;
-                addCombatLog(combatLog, `${survival_state.monster.name} を倒した！`, 'text-green-400');
-                survival_state.wave++;
-                const healBonus = calculateNormalityBonus(survival_state.damageLog, true); // Use survival specific bonus
-                const baseHeal = 10;
-                const healAmount = Math.min(survival_state.player.maxHp - survival_state.player.currentHp, Math.round(baseHeal * healBonus));
-                survival_state.player.currentHp += healAmount;
+                this.charts.dieDist = new Chart(document.getElementById('die-dist-chart').getContext('2d'), { 
+                    type: 'bar', 
+                    data: { labels: CONFIG.DICE_OUTCOMES, datasets: [{ data: [], backgroundColor: 'rgba(56, 189, 248, 0.6)' }] }, 
+                    options: { ...commonChartOptions, scales: { ...commonChartOptions.scales, x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 10 } } } } }
+                });
                 
-                if (healBonus > 1.1) {
-                    addCombatLog(combatLog, `正規分布ボーナス！ HP回復量が ${healBonus.toFixed(2)}倍に！ (回復量: ${healAmount})`, 'bonus-text');
-                } else if (healBonus < 0.9) {
-                    addCombatLog(combatLog, `分布が乱れている！ HP回復量が ${healBonus.toFixed(2)}倍に減少！ (回復量: ${healAmount})`, 'penalty-text');
+                const createMixedChart = (canvasId, barColor) => new Chart(document.getElementById(canvasId).getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [
+                            { label: '度数', data: [], backgroundColor: barColor, barPercentage: 1.0, categoryPercentage: 1.0 },
+                            { label: '理論上の正規分布', data: [], type: 'line', borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 0, tension: 0.1 },
+                            { label: '平均(μ)', data: [], type: 'scatter', backgroundColor: 'rgba(251, 191, 36, 1)', pointRadius: 6, pointStyle: 'triangle', rotation: 0 },
+                            { label: '±1σ', data: [], type: 'scatter', backgroundColor: 'rgba(74, 222, 128, 1)', pointRadius: 5, pointStyle: 'circle' },
+                            { label: '±2σ', data: [], type: 'scatter', backgroundColor: 'rgba(251, 146, 60, 1)', pointRadius: 5, pointStyle: 'circle' },
+                            { label: '±3σ', data: [], type: 'scatter', backgroundColor: 'rgba(239, 68, 68, 1)', pointRadius: 5, pointStyle: 'circle' }
+                        ]
+                    },
+                    options: commonChartOptions
+                });
+
+                this.charts.resultsHistogram = createMixedChart('results-histogram', 'rgba(251, 191, 36, 0.6)');
+                this.charts.gameOver = createMixedChart('game-over-chart', 'rgba(239, 68, 68, 0.6)');
+                this.charts.missionResult = createMixedChart('mission-result-chart', 'rgba(192, 132, 252, 0.6)');
+                this.charts.liveSurvival = createMixedChart('live-survival-chart', 'rgba(239, 68, 68, 0.6)');
+                this.charts.liveMission = createMixedChart('live-mission-chart', 'rgba(168, 85, 247, 0.6)');
+            }
+
+            updateDieDistribution(weapon) {
+                this.charts.dieDist.data.datasets[0].data = CONFIG.DICE_DISTRIBUTIONS[weapon].probs;
+                this.charts.dieDist.update();
+            }
+
+            updateDistributionChart(chartKey, data, nValue, weapon) {
+                const chartInstance = this.charts[chartKey];
+                if (!chartInstance) return;
+
+                const { mean, stdDev } = Utils.calculateDistributionStats(data);
+                
+                const numBins = nValue <= 5 ? 30 : 100;
+                const binWidth = (6 - 1) / numBins;
+                const labels = Array.from({length: numBins}, (_, i) => (1 + (i + 0.5) * binWidth));
+                
+                const bins = new Array(numBins).fill(0);
+                data.forEach(value => {
+                    let binIndex = Math.floor((value - 1) / binWidth);
+                    if (binIndex === numBins) binIndex = numBins - 1;
+                    if (binIndex >= 0 && binIndex < numBins) bins[binIndex]++;
+                });
+
+                chartInstance.data.labels = labels.map(l => l.toFixed(2));
+                chartInstance.data.datasets[0].data = bins;
+                
+                const theoreticalStats = (() => {
+                    const probs = CONFIG.DICE_DISTRIBUTIONS[weapon].probs;
+                    let mu = 0;
+                    for (let i = 0; i < CONFIG.DICE_OUTCOMES.length; i++) {
+                        mu += CONFIG.DICE_OUTCOMES[i] * probs[i];
+                    }
+                    let variance = 0;
+                    for (let i = 0; i < CONFIG.DICE_OUTCOMES.length; i++) {
+                        variance += Math.pow(CONFIG.DICE_OUTCOMES[i] - mu, 2) * probs[i];
+                    }
+                    return { mu, sigma: Math.sqrt(variance) };
+                })();
+
+                const sampleMeanSigma = theoreticalStats.sigma / Math.sqrt(nValue);
+
+                if (sampleMeanSigma > 0 && data.length > 0) {
+                    const normalCurveData = labels.map(x => {
+                        const exponent = -Math.pow(x - theoreticalStats.mu, 2) / (2 * Math.pow(sampleMeanSigma, 2));
+                        const pdf = (1 / (sampleMeanSigma * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
+                        return pdf * data.length * binWidth;
+                    });
+                    chartInstance.data.datasets[1].data = normalCurveData;
+                    chartInstance.data.datasets[2].data = [{x: mean, y: 0}];
+                    chartInstance.data.datasets[3].data = [{x: mean + stdDev, y: 0}, {x: mean - stdDev, y: 0}];
+                    chartInstance.data.datasets[4].data = [{x: mean + 2 * stdDev, y: 0}, {x: mean - 2 * stdDev, y: 0}];
+                    chartInstance.data.datasets[5].data = [{x: mean + 3 * stdDev, y: 0}, {x: mean - 3 * stdDev, y: 0}];
                 } else {
-                    addCombatLog(combatLog, `HPが ${healAmount} 回復した。`, 'text-green-300');
+                    [1, 2, 3, 4, 5].forEach(i => chartInstance.data.datasets[i].data = []);
                 }
-
-                setTimeout(setupNextWave, 1000);
-                return;
-            }
-            const monsterDamage = survival_state.monster.attack;
-            survival_state.player.currentHp -= monsterDamage;
-            addCombatLog(combatLog, `${survival_state.monster.name}の反撃！ ${monsterDamage} のダメージ！`, 'text-red-400');
-            updateSurvivalUI();
-            if (survival_state.player.currentHp <= 0) survivalGameOver();
-        }
-        function updateSurvivalUI() {
-            const { bonus, skewness, kurtosis } = getBonusAndStats(survival_state.damageLog, true);
-            updateStatDisplay(survivalBonusDisplay, bonus, survivalSkewDisplay, skewness, survivalKurtDisplay, kurtosis);
-            survivalTrialCount.textContent = survival_state.damageLog.length;
-
-            playerHpText.textContent = `${Math.max(0, survival_state.player.currentHp).toFixed(0)} / ${survival_state.player.maxHp}`;
-            playerHpBar.style.width = `${Math.max(0, survival_state.player.currentHp) / survival_state.player.maxHp * 100}%`;
-            document.getElementById('survival-hero-image').src = getCharacterImage(assetUrls.hero, survival_state.player.currentHp, survival_state.player.maxHp);
-
-            monsterNameEl.textContent = survival_state.monster.name;
-            monsterHpText.textContent = `${Math.max(0, survival_state.monster.currentHp).toFixed(0)} / ${survival_state.monster.maxHp}`;
-            monsterHpBar.style.width = `${Math.max(0, survival_state.monster.currentHp) / survival_state.monster.maxHp * 100}%`;
-            if (survival_state.monster.asset) {
-                monsterImageEl.src = getCharacterImage(survival_state.monster.asset, survival_state.monster.currentHp, survival_state.monster.maxHp);
+                
+                chartInstance.update();
             }
         }
-        function survivalGameOver() {
-            document.getElementById('survival-attack-btn').disabled = true;
-            const waveScore = survival_state.wave - 1;
-            finalScoreEl.textContent = waveScore;
-            
-            const { skewness, kurtosis } = calculateDistributionStats(survival_state.damageLog);
-            let analysisText = `歪度は ${skewness.toFixed(2)}、尖度は ${kurtosis.toFixed(2)} でした。<br>`;
-            if (Math.abs(skewness) < 0.5 && Math.abs(kurtosis - 3) < 0.5) {
-                analysisText += "素晴らしい！ほぼ完璧な正規分布です。nを大きく保つ戦略が見事にハマりましたね！";
-            } else if (Math.abs(skewness) < 1 && Math.abs(kurtosis - 3) < 1) {
-                analysisText += "良い分布です！もう少し試行回数を重ねるか、nを調整すれば、さらにボーナスを狙えたでしょう。";
-            } else {
-                analysisText += "分布にまだ改善の余地がありそうです。nを大きくして、ダメージを安定させることを意識してみましょう！";
-            }
-            gameOverAnalysisEl.innerHTML = analysisText;
 
-            updateDistributionChart(gameOverChart, survival_state.damageLog);
-            survivalGameOverModal.classList.remove('hidden');
-        }
-        function restartSurvival() {
-            survivalGameOverModal.classList.add('hidden');
-            document.getElementById('survival-game-screen').classList.add('hidden');
-            document.getElementById('survival-start-screen').classList.remove('hidden');
-            document.getElementById('start-survival-btn').classList.remove('hidden');
-            document.getElementById('survival-attack-btn').classList.add('hidden');
-            combatLog.innerHTML = '';
-        }
-
-        // --- Mission Mode Logic ---
-        function startMission() {
-            mission_state = {
-                monster: { name: 'キングゴーレム', maxHp: MISSION_HP, currentHp: MISSION_HP, asset: assetUrls.golem },
-                turnsLeft: MISSION_TURNS,
-                damageLog: []
-            };
-            document.getElementById('start-mission-btn').classList.add('hidden');
-            document.getElementById('mission-attack-btn').classList.remove('hidden');
-            document.getElementById('mission-start-screen').classList.add('hidden');
-            document.getElementById('mission-game-screen').classList.remove('hidden');
-            document.getElementById('mission-attack-btn').disabled = false;
-            updateDistributionChart(liveMissionChart, []);
-            updateMissionUI();
-            addCombatLog(missionCombatLog, '討伐ミッション開始！', 'text-purple-400');
-        }
-        function missionAttack() {
-            if (mission_state.turnsLeft <= 0) return;
-            mission_state.turnsLeft--;
-            const baseDamage = calculateMeanDamage();
-            const bonus = calculateNormalityBonus(mission_state.damageLog);
-            const finalDamage = baseDamage * bonus;
-            mission_state.damageLog.push(baseDamage); 
-            mission_state.monster.currentHp -= finalDamage;
-            
-            if (bonus > 1.1) {
-                 addCombatLog(missionCombatLog, `正規分布ボーナス！ ダメージが ${bonus.toFixed(2)}倍に！`, 'bonus-text');
-            } else if (bonus < 0.9) {
-                 addCombatLog(missionCombatLog, `分布が乱れている！ ダメージが ${bonus.toFixed(2)}倍に減少！`, 'penalty-text');
-            }
-            addCombatLog(missionCombatLog, `残り${mission_state.turnsLeft+1}ターン: ${finalDamage.toFixed(1)} のダメージ！`, 'text-blue-300');
-            
-            updateDistributionChart(liveMissionChart, mission_state.damageLog);
-            updateMissionUI();
-            if (mission_state.monster.currentHp <= 0) { missionResult(true); } 
-            else if (mission_state.turnsLeft <= 0) { missionResult(false); }
-        }
-        function updateMissionUI() {
-            const { bonus, skewness, kurtosis } = getBonusAndStats(mission_state.damageLog);
-            updateStatDisplay(missionBonusDisplay, bonus, missionSkewDisplay, skewness, missionKurtDisplay, kurtosis);
-
-            turnCounterEl.textContent = mission_state.turnsLeft;
-            document.getElementById('mission-monster-hp-text').textContent = `${Math.max(0, mission_state.monster.currentHp).toFixed(0)} / ${mission_state.monster.maxHp}`;
-            document.getElementById('mission-monster-hp-bar').style.width = `${Math.max(0, mission_state.monster.currentHp) / mission_state.monster.maxHp * 100}%`;
-            document.getElementById('mission-golem-image').src = getCharacterImage(mission_state.monster.asset, mission_state.monster.currentHp, mission_state.monster.maxHp);
-        }
-        function missionResult(isWin) {
-            document.getElementById('mission-attack-btn').disabled = true;
-            updateDistributionChart(missionResultChart, mission_state.damageLog);
-            if (isWin) {
-                missionResultTitle.textContent = 'MISSION COMPLETE!';
-                missionResultTitle.className = 'text-5xl font-bold font-game mb-4 text-green-400';
-                missionResultBorder.className = 'bg-gray-800 rounded-2xl p-8 max-w-2xl w-full text-center border-4 border-green-400';
-            } else {
-                missionResultTitle.textContent = 'MISSION FAILED';
-                missionResultTitle.className = 'text-5xl font-bold font-game mb-4 text-red-500';
-                missionResultBorder.className = 'bg-gray-800 rounded-2xl p-8 max-w-2xl w-full text-center border-4 border-red-500';
-            }
-            missionResultModal.classList.remove('hidden');
-        }
-        function restartMission() {
-            missionResultModal.classList.add('hidden');
-            document.getElementById('mission-game-screen').classList.add('hidden');
-            document.getElementById('mission-start-screen').classList.remove('hidden');
-            document.getElementById('start-mission-btn').classList.remove('hidden');
-            document.getElementById('mission-attack-btn').classList.add('hidden');
-            missionCombatLog.innerHTML = '';
-        }
-        
-        // --- Utility Functions ---
-        function addCombatLog(logEl, message, colorClass) {
-            const p = document.createElement('p');
-p.textContent = message;
-            if (colorClass) p.className = colorClass;
-            logEl.appendChild(p);
-            logEl.scrollTop = logEl.scrollHeight;
-        }
-        
-        function calculateTheoreticalStats(probs) {
-            let mu = 0;
-            for (let i = 0; i < diceOutcomes.length; i++) {
-                mu += diceOutcomes[i] * probs[i];
-            }
-            let variance = 0;
-            for (let i = 0; i < diceOutcomes.length; i++) {
-                variance += Math.pow(diceOutcomes[i] - mu, 2) * probs[i];
-            }
-            return { mu, sigma: Math.sqrt(variance) };
-        }
-
-        function calculateDistributionStats(data) {
-            const n = data.length;
-            if (n < 2) return { mean: data[0] || 0, stdDev: 0, skewness: 0, kurtosis: 3 };
-            const mean = data.reduce((a, b) => a + b, 0) / n;
-            const stdDev = Math.sqrt(data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / n);
-            if (stdDev === 0 || n < 3) return { mean, stdDev, skewness: 0, kurtosis: 3 };
-            const m3 = data.reduce((acc, val) => acc + Math.pow(val - mean, 3), 0) / n;
-            const m4 = data.reduce((acc, val) => acc + Math.pow(val - mean, 4), 0) / n;
-            const skewness = m3 / Math.pow(stdDev, 3);
-            const kurtosis = m4 / Math.pow(stdDev, 4);
-            return { mean, stdDev, skewness, kurtosis };
-        }
-        
-        function calculateNormalityBonus(data, isSurvival = false) {
-            if (data.length < 5) return 1.0; 
-            const { skewness, kurtosis } = calculateDistributionStats(data);
-            const error = Math.pow(skewness, 2) + Math.pow(kurtosis - 3, 2);
-            const multiplier = isSurvival ? 5 : 3;
-            return multiplier * Math.exp(-error);
-        }
-        
-        function getBonusAndStats(data, isSurvival = false) {
-            const bonus = calculateNormalityBonus(data, isSurvival);
-            const { skewness, kurtosis } = calculateDistributionStats(data);
-            return { bonus, skewness, kurtosis };
-        }
-        
-        function updateStatDisplay(bonusEl, bonus, skewEl, skew, kurtEl, kurt, feedbackEl) {
-            if (bonusEl) {
-                bonusEl.textContent = `x${bonus.toFixed(2)}`;
-                bonusEl.className = bonus > 1.1 ? 'font-bold bonus-text' : (bonus < 0.9 ? 'font-bold penalty-text' : 'font-bold');
+        // =================================================================================
+        // UI MANAGER
+        // Handles all DOM manipulations and UI event listeners.
+        // =================================================================================
+        class UIManager {
+            constructor() {
+                this.elements = this.getDOMElements();
             }
 
-            skewEl.textContent = skew.toFixed(2);
-            kurtEl.textContent = kurt.toFixed(2);
-            
-            const skewError = Math.abs(skew);
-            skewEl.className = skewError < 0.5 ? 'font-bold stat-good' : (skewError < 1 ? 'font-bold stat-ok' : 'font-bold stat-bad');
-            
-            const kurtError = Math.abs(kurt - 3);
-            kurtEl.className = kurtError < 0.5 ? 'font-bold stat-good' : (kurtError < 1 ? 'font-bold stat-ok' : 'font-bold stat-bad');
+            initialize(game) {
+                this.attachEventListeners(game);
+                this.renderNButtons();
+                this.setLegend();
+                this.updateModeView(game.state.currentMode);
+                this.updateWeaponSelection(game.state.selectedWeapon);
+                this.updateNSelection(game.state.nValue);
+                this.elements.missionHpDisplay.textContent = CONFIG.MISSION_HP;
+                this.elements.missionTurnDisplay.textContent = CONFIG.MISSION_TURNS;
+            }
 
-            if (feedbackEl) {
-                if (skewError < 0.5 && kurtError < 0.5) {
-                    feedbackEl.textContent = "正規分布に近いぞ！";
-                    feedbackEl.className = "text-xs mt-1 italic stat-good";
-                } else if (skewError > 1 || kurtError > 1) {
-                    feedbackEl.textContent = "分布が乱れている！";
-                    feedbackEl.className = "text-xs mt-1 italic stat-bad";
+            getDOMElements() {
+                const ids = [
+                    'intro-mode-btn', 'hint-mode-btn', 'sim-mode-btn', 'survival-mode-btn', 'mission-mode-btn',
+                    'introduction-panel', 'hint-panel', 'game-content-container', 'simulation-mode-panel',
+                    'survival-mode-panel', 'mission-mode-panel', 'weapon-selector', 'n-selector', 'action-buttons',
+                    'total-trials', 'mean-of-means', 'std-dev', 'sim-skew-display', 'sim-kurt-display', 'simulation-log',
+                    'sim-legend', 'survival-start-screen', 'survival-game-screen', 'wave-counter', 'survival-trial-count',
+                    'survival-skew-display', 'survival-kurt-display', 'survival-bonus-display', 'survival-hero-image',
+                    'player-hp-bar', 'player-hp-text', 'monster-image', 'monster-name', 'monster-hp-bar', 'monster-hp-text',
+                    'combat-log', 'mission-start-screen', 'mission-game-screen', 'turn-counter', 'mission-skew-display',
+                    'mission-kurt-display', 'mission-bonus-display', 'mission-hero-image', 'mission-golem-image',
+                    'mission-monster-name', 'mission-monster-hp-bar', 'mission-monster-hp-text', 'mission-combat-log',
+                    'survival-game-over-modal', 'final-score', 'game-over-analysis', 'game-over-chart', 'restart-survival-btn',
+                    'mission-result-modal', 'mission-result-border', 'mission-result-title', 'mission-result-chart',
+                    'restart-mission-btn', 'column-modal', 'column-text', 'close-column-btn', 'weapon-col-btn', 'n-col-btn',
+                    'sim-col-btn', 'survival-col-btn', 'mission-col-btn', 'mean-col-btn', 'stddev-col-btn', 'mission-hp-display',
+                    'mission-turn-display', 'intro-hero-image'
+                ];
+                const elements = {};
+                ids.forEach(id => {
+                    elements[id.replace(/-(\w)/g, (match, p1) => p1.toUpperCase())] = document.getElementById(id);
+                });
+                return elements;
+            }
+
+            attachEventListeners(game) {
+                this.elements.introModeBtn.addEventListener('click', () => game.switchMode('introduction'));
+                this.elements.hintModeBtn.addEventListener('click', () => game.switchMode('hint'));
+                this.elements.simModeBtn.addEventListener('click', () => game.switchMode('simulation'));
+                this.elements.survivalModeBtn.addEventListener('click', () => game.switchMode('survival'));
+                this.elements.missionModeBtn.addEventListener('click', () => game.switchMode('mission'));
+
+                this.elements.weaponSelector.addEventListener('change', (e) => game.handleWeaponChange(e.target.value));
+                this.elements.nSelector.addEventListener('click', (e) => {
+                    const button = e.target.closest('button');
+                    if (button && button.dataset.n) {
+                        game.handleNChange(parseInt(button.dataset.n, 10));
+                    }
+                });
+                this.elements.nSelector.addEventListener('change', (e) => {
+                    if (e.target.tagName === 'INPUT') {
+                        game.handleNChange(parseInt(e.target.value, 10));
+                    }
+                });
+
+                this.elements.restartSurvivalBtn.addEventListener('click', () => game.restartSurvival());
+                this.elements.restartMissionBtn.addEventListener('click', () => game.restartMission());
+                this.elements.closeColumnBtn.addEventListener('click', () => this.toggleModal('columnModal', false));
+                this.elements.columnModal.addEventListener('click', (e) => {
+                    if (e.target === this.elements.columnModal) this.toggleModal('columnModal', false);
+                });
+
+                Object.keys(CONFIG.COLUMN_TEXTS).forEach(key => {
+                    const btn = this.elements[`${key}ColBtn`];
+                    if (btn) {
+                        btn.addEventListener('click', () => this.showColumn(CONFIG.COLUMN_TEXTS[key]));
+                    }
+                });
+            }
+
+            updateModeView(mode) {
+                [this.elements.introductionPanel, this.elements.hintPanel, this.elements.gameContentContainer].forEach(p => p.classList.add('hidden'));
+                
+                const modeButtons = [this.elements.introModeBtn, this.elements.hintModeBtn, this.elements.simModeBtn, this.elements.survivalModeBtn, this.elements.missionModeBtn];
+                modeButtons.forEach(btn => {
+                    btn.classList.remove('btn-active', 'btn-inactive');
+                    btn.classList.add(btn.id.startsWith(mode) ? 'btn-active' : 'btn-inactive');
+                });
+
+                if (mode === 'introduction') {
+                    this.elements.introductionPanel.classList.remove('hidden');
+                } else if (mode === 'hint') {
+                    this.elements.hintPanel.classList.remove('hidden');
                 } else {
-                    feedbackEl.textContent = "(歪度0, 尖度3が理想)";
-                    feedbackEl.className = "text-xs text-gray-500 mt-1 italic";
+                    this.elements.gameContentContainer.classList.remove('hidden');
+                    [this.elements.simulationModePanel, this.elements.survivalModePanel, this.elements.missionModePanel].forEach(p => p.classList.add('hidden'));
+                    this.elements[`${mode}ModePanel`].classList.remove('hidden');
                 }
             }
-        }
 
-        function setInitialImages() {
-            document.getElementById('intro-hero-image').src = assetUrls.hero.normal;
-            document.getElementById('survival-hero-image').src = assetUrls.hero.normal;
-            document.getElementById('mission-hero-image').src = assetUrls.hero.normal;
-            document.getElementById('mission-golem-image').src = assetUrls.golem.normal;
-        }
-
-        function getCharacterImage(characterAsset, currentHp, maxHp) {
-            const percentage = (currentHp / maxHp) * 100;
-            if (percentage < 30) return characterAsset.danger;
-            if (percentage < 70) return characterAsset.hurt;
-            return characterAsset.normal;
-        }
-
-        function setLegend() {
-            const legendHtml = `
-                <div class="flex items-center gap-1">
-                    <span class="w-3 h-3 bg-yellow-400" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span>
-                    <span>平均 (μ)</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-                    <span>±1σ (約68%)</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <span class="w-3 h-3 bg-orange-400 rounded-full"></span>
-                    <span>±2σ (約95%)</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <span class="w-3 h-3 bg-red-500 rounded-full"></span>
-                    <span>±3σ (約99.7%)</span>
-                </div>`;
-            document.getElementById('sim-legend').innerHTML = legendHtml;
-        }
-
-        function renderNButtons() {
-            nSelector.innerHTML = '';
-            nValues.forEach(val => {
-                const button = document.createElement('button');
-                button.textContent = val;
-                button.dataset.n = val;
-                button.className = 'n-button';
-                nSelector.appendChild(button);
-            });
-            
-            const customNInput = document.createElement('input');
-            customNInput.type = 'number';
-            customNInput.min = 1;
-            customNInput.max = 999;
-            customNInput.placeholder = 'n=?';
-            customNInput.className = 'n-button w-24 text-center';
-            nSelector.appendChild(customNInput);
-
-            document.querySelector(`#n-selector button[data-n='${currentN}']`).classList.add('n-button-selected');
-        }
-
-        // --- Event Listeners ---
-        Object.keys(modeButtons).forEach(key => {
-            modeButtons[key].addEventListener('click', () => switchMode(key));
-        });
-        
-        nSelector.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON') {
-                currentN = parseInt(e.target.dataset.n, 10);
-                document.querySelectorAll('#n-selector button').forEach(btn => btn.classList.remove('n-button-selected'));
-                e.target.classList.add('n-button-selected');
-                nSelector.querySelector('input').value = '';
-                if (currentMode === 'simulation') resetSimulation();
+            renderActionButtons(game) {
+                const container = this.elements.actionButtons;
+                container.innerHTML = '';
+                let buttonsHtml = '';
+                if (game.state.currentMode === 'simulation') {
+                    buttonsHtml = `
+                        <h3 class="text-lg font-bold mb-3 text-cyan-300">3. 試行する</h3>
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <button data-action="run-1" class="action-btn w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition">1回 試行</button>
+                            <button data-action="run-100" class="action-btn w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition">100回 試行</button>
+                            <button data-action="run-auto" class="action-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition col-span-2">自動で試行</button>
+                        </div>
+                        <button data-action="reset" class="action-btn w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">リセット</button>`;
+                } else if (game.state.currentMode === 'survival') {
+                    buttonsHtml = `<button data-action="start-survival" class="action-btn w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl mt-4">ゲーム開始！</button>
+                                   <div id="survival-attack-controls" class="grid-cols-2 gap-3 mt-4 hidden">
+                                       <button data-action="survival-attack" class="action-btn w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl">攻撃！</button>
+                                       <button data-action="survival-auto" class="action-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl">自動で攻撃</button>
+                                   </div>`;
+                } else if (game.state.currentMode === 'mission') {
+                    buttonsHtml = `<button data-action="start-mission" class="action-btn w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl mt-4">ミッション開始！</button>
+                                   <div id="mission-attack-controls" class="grid-cols-2 gap-3 mt-4 hidden">
+                                       <button data-action="mission-attack" class="action-btn w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl">攻撃！</button>
+                                       <button data-action="mission-auto" class="action-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl">自動で攻撃</button>
+                                   </div>`;
+                }
+                container.innerHTML = buttonsHtml;
+                container.addEventListener('click', (e) => {
+                    const button = e.target.closest('button');
+                    if (button && button.dataset.action) {
+                        game.handleAction(button.dataset.action);
+                    }
+                });
             }
-        });
+            
+            renderNButtons() {
+                const container = this.elements.nSelector;
+                container.innerHTML = '';
+                CONFIG.N_VALUES.forEach(val => {
+                    const button = document.createElement('button');
+                    button.dataset.n = val;
+                    button.className = 'n-button';
 
-        nSelector.addEventListener('change', (e) => {
-            if (e.target.tagName === 'INPUT') {
-                let val = parseInt(e.target.value, 10);
+                    const iconPath = CONFIG.ASSETS.ICONS[`n${val}`];
+                    if (iconPath) {
+                        const img = document.createElement('img');
+                        img.src = iconPath;
+                        img.alt = `n = ${val}`;
+                        img.className = 'w-5 h-5 pointer-events-none';
+                        button.appendChild(img);
+                    }
+
+                    const text = document.createElement('span');
+                    text.textContent = val;
+                    text.className = 'pointer-events-none';
+                    button.appendChild(text);
+                    
+                    container.appendChild(button);
+                });
+                
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'n-button flex items-center gap-2'; // 他のボタンとデザインを統一
+                    
+                    // 画像
+                    const customIcon = document.createElement('img');
+                    customIcon.src = CONFIG.ASSETS.ICONS.n100;  // ← 便宜上 n100.png を使う
+                    customIcon.alt = 'n = ?';
+                    customIcon.className = 'w-5 h-5 pointer-events-none';
+                    wrapper.appendChild(customIcon);
+                    
+                    // input要素
+                    const customNInput = document.createElement('input');
+                    customNInput.type = 'number';
+                    customNInput.min = 1;
+                    customNInput.max = CONFIG.MAX_N;
+                    customNInput.placeholder = 'n=?';
+                    customNInput.className = 'text-center bg-transparent border-none outline-none w-12 pointer-events-auto';
+                    wrapper.appendChild(customNInput);
+                    
+                    container.appendChild(wrapper);
+
+            }
+
+            updateNSelection(nValue) {
+                const container = this.elements.nSelector;
+                container.querySelectorAll('button').forEach(btn => btn.classList.remove('n-button-selected'));
+                const matchingButton = container.querySelector(`button[data-n='${nValue}']`);
+                if (matchingButton) {
+                    matchingButton.classList.add('n-button-selected');
+                    container.querySelector('input').value = '';
+                } else {
+                    container.querySelector('input').value = nValue;
+                }
+            }
+
+            updateWeaponSelection(weapon) {
+                const radio = this.elements.weaponSelector.querySelector(`input[value="${weapon}"]`);
+                if (radio) radio.checked = true;
+            }
+
+            addLog(logElKey, message, colorClass) {
+                const logEl = this.elements[logElKey];
+                const p = document.createElement('p');
+                p.textContent = message;
+                if (colorClass) p.className = colorClass;
+                logEl.appendChild(p);
+                logEl.scrollTop = logEl.scrollHeight;
+            }
+
+            updateSimStats(stats) {
+                this.elements.totalTrials.textContent = stats.n;
+                this.elements.meanOfMeans.textContent = stats.n > 0 ? stats.mean.toFixed(2) : 'N/A';
+                this.elements.stdDev.textContent = stats.n > 0 ? stats.stdDev.toFixed(2) : 'N/A';
+                this.updateStatDisplay(null, null, this.elements.simSkewDisplay, stats.skewness, this.elements.simKurtDisplay, stats.kurtosis);
+            }
+
+            updateCombatStats(mode, bonus, skewness, kurtosis, trialCount) {
+                const bonusEl = this.elements[`${mode}BonusDisplay`];
+                const skewEl = this.elements[`${mode}SkewDisplay`];
+                const kurtEl = this.elements[`${mode}KurtDisplay`];
+                if (mode === 'survival') {
+                    this.elements.survivalTrialCount.textContent = trialCount;
+                }
+                this.updateStatDisplay(bonusEl, bonus, skewEl, skewness, kurtEl, kurtosis);
+            }
+
+            updateStatDisplay(bonusEl, bonus, skewEl, skew, kurtEl, kurt) {
+                if (bonusEl) {
+                    bonusEl.textContent = `x${bonus.toFixed(2)}`;
+                    bonusEl.className = bonus > 1.1 ? 'font-bold bonus-text' : (bonus < 0.9 ? 'font-bold penalty-text' : 'font-bold');
+                }
+                skewEl.textContent = skew.toFixed(2);
+                kurtEl.textContent = kurt.toFixed(2);
+                const skewError = Math.abs(skew);
+                skewEl.className = skewError < 0.5 ? 'font-bold stat-good' : (skewError < 1 ? 'font-bold stat-ok' : 'font-bold stat-bad');
+                const kurtError = Math.abs(kurt - 3);
+                kurtEl.className = kurtError < 0.5 ? 'font-bold stat-good' : (kurtError < 1 ? 'font-bold stat-ok' : 'font-bold stat-bad');
+            }
+
+            updateCombatantUI(type, state) {
+                let elements;
+                if (type === 'player') {
+                    elements = {
+                        hpBar: this.elements.playerHpBar,
+                        hpText: this.elements.playerHpText,
+                        image: this.elements.survivalHeroImage,
+                        asset: CONFIG.ASSETS.HERO
+                    };
+                } else if (type === 'survivalMonster') {
+                    elements = {
+                        hpBar: this.elements.monsterHpBar,
+                        hpText: this.elements.monsterHpText,
+                        image: this.elements.monsterImage,
+                        name: this.elements.monsterName,
+                        asset: state.asset
+                    };
+                } else { // missionMonster
+                    elements = {
+                        hpBar: this.elements.missionMonsterHpBar,
+                        hpText: this.elements.missionMonsterHpText,
+                        image: this.elements.missionGolemImage,
+                        asset: state.asset
+                    };
+                }
+                
+                const hp = Math.max(0, state.currentHp);
+                elements.hpBar.style.width = `${(hp / state.maxHp) * 100}%`;
+                elements.hpText.textContent = `${hp.toFixed(0)} / ${state.maxHp}`;
+                elements.image.src = Utils.getCharacterImage(elements.asset, hp, state.maxHp);
+                if (elements.name) elements.name.textContent = state.name;
+            }
+
+            toggleModal(modalKey, show) {
+                this.elements[modalKey].classList.toggle('hidden', !show);
+            }
+
+            showColumn(text) {
+                this.elements.columnText.textContent = text;
+                this.toggleModal('columnModal', true);
+            }
+
+            setLegend() {
+                this.elements.simLegend.innerHTML = `
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 bg-yellow-400" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></span><span>平均 (μ)</span></div>
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 bg-green-500 rounded-full"></span><span>±1σ (約68%)</span></div>
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 bg-orange-400 rounded-full"></span><span>±2σ (約95%)</span></div>
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 bg-red-500 rounded-full"></span><span>±3σ (約99.7%)</span></div>`;
+            }
+        }
+
+        // =================================================================================
+        // GAME CLASS
+        // The main class that orchestrates the entire game.
+        // =================================================================================
+        class Game {
+            constructor() {
+                this.state = {
+                    currentMode: 'introduction',
+                    selectedWeapon: 'normalSword',
+                    nValue: CONFIG.INITIAL_N,
+                    isActionLocked: false,
+                    autoRunInterval: null,
+                    simData: [],
+                    survivalState: {},
+                    missionState: {}
+                };
+                this.ui = new UIManager();
+                this.chartManager = new ChartManager();
+            }
+
+            initialize() {
+                this.ui.initialize(this);
+                this.chartManager.initialize();
+                this.chartManager.updateDieDistribution(this.state.selectedWeapon);
+            }
+
+            switchMode(mode) {
+                if (this.state.currentMode === mode) return;
+                this.stopAutoAction();
+                this.state.currentMode = mode;
+                this.ui.updateModeView(mode);
+                this.ui.renderActionButtons(this);
+            }
+
+            handleWeaponChange(weapon) {
+                this.state.selectedWeapon = weapon;
+                this.ui.updateWeaponSelection(weapon);
+                this.chartManager.updateDieDistribution(weapon);
+                if (this.state.currentMode === 'simulation') this.resetSimulation();
+            }
+
+            handleNChange(n) {
+                let val = parseInt(n, 10);
                 if (isNaN(val) || val < 1) val = 1;
-                if (val > 999) val = 999;
-                currentN = val;
-                e.target.value = val;
-                document.querySelectorAll('#n-selector button').forEach(btn => btn.classList.remove('n-button-selected'));
-                if (currentMode === 'simulation') resetSimulation();
+                if (val > CONFIG.MAX_N) val = CONFIG.MAX_N;
+                this.state.nValue = val;
+                this.ui.updateNSelection(val);
+                if (this.state.currentMode === 'simulation') this.resetSimulation();
             }
-        });
 
-        weaponSelector.addEventListener('change', () => {
-            updateWeaponDisplay();
-            if (currentMode === 'simulation') resetSimulation();
-        });
-        restartSurvivalBtn.addEventListener('click', restartSurvival);
-        restartMissionBtn.addEventListener('click', restartMission);
-        
-        // Column Modal Listeners
-        weaponColBtn.addEventListener('click', () => {
-            columnText.textContent = "どの武器も一見サイコロの出やすさが異なりますが、期待値（平均）は同じ3.5になるように調整されています。";
-            columnModal.classList.remove('hidden');
-        });
-        nColBtn.addEventListener('click', () => {
-            columnText.textContent = "nを大きくすればするほど、平均ダメージの分布は理論上の正規分布（赤い線）に近づいていきます。";
-            columnModal.classList.remove('hidden');
-        });
-        simColBtn.addEventListener('click', () => {
-            columnText.textContent = "敵はいないので、心ゆくまで武器とnの組み合わせを試し、グラフがどう変化するかを観察してみましょう！";
-            columnModal.classList.remove('hidden');
-        });
-        survivalColBtn.addEventListener('click', () => {
-            columnText.textContent = "君の統計学の知識が生存の鍵だ。分布を整えてボーナスを稼ぎ、どこまで生き残れるか挑戦しよう！";
-            columnModal.classList.remove('hidden');
-        });
-        missionColBtn.addEventListener('click', () => {
-            columnText.textContent = "限られたターンの中で、いかに分布を整えて大ダメージを与えるかが攻略の鍵となります。";
-            columnModal.classList.remove('hidden');
-        });
-        meanColBtn.addEventListener('click', () => {
-            columnText.textContent = "ダメージ平均は、これまでの君の全攻撃の平均値だ。nを大きくすると、一回ごとのダメージがこの値に近づいていくぞ。";
-            columnModal.classList.remove('hidden');
-        });
-        stddevColBtn.addEventListener('click', () => {
-            columnText.textContent = "ばらつき（標準偏差）は、攻撃ダメージがどれだけ平均から離れているかを示す。この値が小さいほど、攻撃が安定している証拠だ！";
-            columnModal.classList.remove('hidden');
-        });
-        closeColumnBtn.addEventListener('click', () => columnModal.classList.add('hidden'));
-        columnModal.addEventListener('click', (e) => {
-            if (e.target === columnModal) {
-                columnModal.classList.add('hidden');
+            handleAction(action) {
+                const actions = {
+                    'run-1': () => this.runSimulation(1),
+                    'run-100': () => this.runSimulation(100),
+                    'run-auto': () => this.toggleAutoSim(),
+                    'reset': () => this.resetSimulation(),
+                    'start-survival': () => this.startSurvival(),
+                    'survival-attack': () => this.survivalAttack(),
+                    'survival-auto': () => this.toggleAutoAttack(),
+                    'start-mission': () => this.startMission(),
+                    'mission-attack': () => this.missionAttack(),
+                    'mission-auto': () => this.toggleAutoAttack(),
+                };
+
+                if (actions[action]) {
+                    actions[action]();
+                }
             }
+
+            lockAction() {
+                this.state.isActionLocked = true;
+                const manualButtons = this.ui.elements.actionButtons.querySelectorAll('[data-action$="-attack"], [data-action="run-1"], [data-action="run-100"]');
+                manualButtons.forEach(btn => btn.disabled = true);
+
+                setTimeout(() => {
+                    this.state.isActionLocked = false;
+                    let gameIsActive = this.isGameActive();
+                    if (gameIsActive) {
+                        manualButtons.forEach(btn => btn.disabled = false);
+                    }
+                }, CONFIG.ACTION_COOLDOWN);
+            }
+            
+            isGameActive() {
+                if (this.state.currentMode === 'survival') {
+                    return this.state.survivalState.player?.currentHp > 0;
+                }
+                if (this.state.currentMode === 'mission') {
+                    return this.state.missionState.monster?.currentHp > 0 && this.state.missionState.turnsLeft > 0;
+                }
+                return true; // Sim mode is always active
+            }
+
+            runSimulation(numTrials) {
+                if (this.state.isActionLocked) return;
+                for (let i = 0; i < numTrials; i++) {
+                    const damage = this.calculateMeanDamage();
+                    this.state.simData.push(damage);
+                    if (numTrials === 1) {
+                        this.ui.addLog('simulationLog', `${damage.toFixed(2)} の出目の平均！`, 'text-yellow-300');
+                    }
+                }
+                this.updateSimUI();
+                this.lockAction();
+            }
+
+            updateSimUI() {
+                const stats = Utils.calculateDistributionStats(this.state.simData);
+                this.ui.updateSimStats({ n: this.state.simData.length, ...stats });
+                this.chartManager.updateDistributionChart('resultsHistogram', this.state.simData, this.state.nValue, this.state.selectedWeapon);
+            }
+
+            resetSimulation() {
+                this.stopAutoAction();
+                this.state.simData = [];
+                this.ui.elements.simulationLog.innerHTML = '';
+                this.updateSimUI();
+            }
+
+            toggleAutoSim() {
+                const btn = this.ui.elements.actionButtons.querySelector('[data-action="run-auto"]');
+                if (this.state.autoRunInterval) {
+                    this.stopAutoAction();
+                } else {
+                    this.state.autoRunInterval = setInterval(() => this.runSimulation(100), 50);
+                    btn.textContent = '停止';
+                    btn.classList.replace('bg-green-500', 'bg-pink-500');
+                }
+            }
+            
+            toggleAutoAttack() {
+                const btn = this.ui.elements.actionButtons.querySelector(`[data-action="${this.state.currentMode}-auto"]`);
+                const manualBtn = this.ui.elements.actionButtons.querySelector(`[data-action="${this.state.currentMode}-attack"]`);
+
+                if (this.state.autoRunInterval) {
+                    this.stopAutoAction();
+                } else {
+                    const attackFunction = this.state.currentMode === 'survival' ? () => this.survivalAttack() : () => this.missionAttack();
+                    this.state.autoRunInterval = setInterval(attackFunction, CONFIG.ACTION_COOLDOWN);
+                    btn.textContent = '停止';
+                    btn.classList.replace('bg-green-500', 'bg-pink-500');
+                    if(manualBtn) manualBtn.disabled = true;
+                }
+            }
+
+            stopAutoAction() {
+                if (this.state.autoRunInterval) {
+                    clearInterval(this.state.autoRunInterval);
+                    this.state.autoRunInterval = null;
+                    
+                    ['sim', 'survival', 'mission'].forEach(mode => {
+                        const autoBtnSelector = mode === 'sim' ? 'run-auto' : `${mode}-auto`;
+                        const autoBtn = this.ui.elements.actionButtons.querySelector(`[data-action="${autoBtnSelector}"]`);
+                        if (autoBtn) {
+                            autoBtn.textContent = mode === 'sim' ? '自動で試行' : '自動で攻撃';
+                            autoBtn.classList.replace('bg-pink-500', 'bg-green-500');
+                        }
+
+                        const manualBtnSelector = mode === 'sim' ? null : `${mode}-attack`;
+                        if(manualBtnSelector) {
+                            const manualBtn = this.ui.elements.actionButtons.querySelector(`[data-action="${manualBtnSelector}"]`);
+                            if(manualBtn && this.isGameActive()) manualBtn.disabled = false;
+                        }
+                    });
+                     const simRunButtons = this.ui.elements.actionButtons.querySelectorAll('[data-action="run-1"], [data-action="run-100"]');
+                     if (simRunButtons) simRunButtons.forEach(b => b.disabled = false);
+                }
+            }
+
+            startSurvival() {
+                this.stopAutoAction();
+                this.state.survivalState = {
+                    wave: 1,
+                    player: { maxHp: CONFIG.PLAYER_HP, currentHp: CONFIG.PLAYER_HP },
+                    monster: {},
+                    damageLog: []
+                };
+                this.ui.elements.survivalStartScreen.classList.add('hidden');
+                this.ui.elements.survivalGameScreen.classList.remove('hidden');
+                this.ui.elements.actionButtons.querySelector('[data-action="start-survival"]').classList.add('hidden');
+                this.ui.elements.actionButtons.querySelector('#survival-attack-controls').style.display = 'grid';
+                this.chartManager.updateDistributionChart('liveSurvival', [], this.state.nValue, this.state.selectedWeapon);
+                this.setupNextWave();
+            }
+
+            setupNextWave() {
+                const wave = this.state.survivalState.wave;
+                const monsterAsset = wave < 5 ? CONFIG.ASSETS.MONSTERS.SLIME_GREEN : (wave < 10 ? CONFIG.ASSETS.MONSTERS.SLIME_BLUE : CONFIG.ASSETS.MONSTERS.SLIME_KING);
+                
+                this.state.survivalState.monster = {
+                    ...monsterAsset,
+                    maxHp: Math.floor(30 * Math.pow(1.12, wave)),
+                    currentHp: Math.floor(30 * Math.pow(1.12, wave)),
+                    attack: Math.floor(3 * Math.pow(1.06, wave)),
+                    asset: monsterAsset
+                };
+                this.ui.elements.waveCounter.textContent = wave;
+                this.updateSurvivalUI();
+                this.ui.addLog('combatLog', `WAVE ${wave} 開始！ ${this.state.survivalState.monster.name} が現れた！`, 'text-yellow-400');
+            }
+
+            survivalAttack() {
+                if (this.state.isActionLocked) return;
+                const state = this.state.survivalState;
+                
+                this.lockAction();
+                
+                const baseDamage = this.calculateMeanDamage();
+                const bonus = Utils.calculateNormalityBonus(state.damageLog, false);
+                const finalDamage = baseDamage * bonus;
+                state.damageLog.push(baseDamage);
+                state.monster.currentHp -= finalDamage;
+
+                this.ui.addLog('combatLog', `勇者の攻撃！ ${baseDamage.toFixed(1)} のダメージ！`, 'text-blue-300');
+                if (bonus > 1.1) this.ui.addLog('combatLog', `正規分布ボーナス！ ダメージが ${bonus.toFixed(2)}倍に！ (最終: ${finalDamage.toFixed(1)})`, 'bonus-text');
+                
+                this.updateSurvivalUI();
+                this.chartManager.updateDistributionChart('liveSurvival', state.damageLog, this.state.nValue, this.state.selectedWeapon);
+
+                if (state.monster.currentHp <= 0) {
+                    this.stopAutoAction();
+                    this.ui.addLog('combatLog', `${state.monster.name} を倒した！`, 'text-green-400');
+                    state.wave++;
+                    const healBonus = Utils.calculateNormalityBonus(state.damageLog, true);
+                    const healAmount = Math.min(state.player.maxHp - state.player.currentHp, Math.round(10 * healBonus));
+                    state.player.currentHp += healAmount;
+                    
+                    if (healBonus > 1.1) this.ui.addLog('combatLog', `正規分布ボーナス！ HP回復量が ${healBonus.toFixed(2)}倍に！ (回復量: ${healAmount})`, 'bonus-text');
+                    else this.ui.addLog('combatLog', `HPが ${healAmount} 回復した。`, 'text-green-300');
+                    
+                    setTimeout(() => this.setupNextWave(), 1500);
+                    return;
+                }
+
+                const monsterDamage = state.monster.attack;
+                state.player.currentHp -= monsterDamage;
+                this.ui.addLog('combatLog', `${state.monster.name}の反撃！ ${monsterDamage} のダメージ！`, 'text-red-400');
+                this.updateSurvivalUI();
+
+                if (state.player.currentHp <= 0) this.survivalGameOver();
+            }
+            
+            updateSurvivalUI() {
+                const state = this.state.survivalState;
+                const { skewness, kurtosis } = Utils.calculateDistributionStats(state.damageLog);
+                const bonus = Utils.calculateNormalityBonus(state.damageLog, false);
+                this.ui.updateCombatStats('survival', bonus, skewness, kurtosis, state.damageLog.length);
+                this.ui.updateCombatantUI('player', state.player);
+                this.ui.updateCombatantUI('survivalMonster', state.monster);
+            }
+
+            survivalGameOver() {
+                this.stopAutoAction();
+                const waveScore = this.state.survivalState.wave - 1;
+                this.ui.elements.finalScore.textContent = waveScore;
+                
+                const { skewness, kurtosis } = Utils.calculateDistributionStats(this.state.survivalState.damageLog);
+                let analysisText = `歪度は ${skewness.toFixed(2)}、尖度は ${kurtosis.toFixed(2)} でした。<br>`;
+                if (Math.abs(skewness) < 0.5 && Math.abs(kurtosis - 3) < 0.5) {
+                    analysisText += "素晴らしい！ほぼ完璧な正規分布です。nを大きく保つ戦略が見事にハマりましたね！";
+                } else {
+                    analysisText += "分布にまだ改善の余地がありそうです。nを大きくして、ダメージを安定させることを意識してみましょう！";
+                }
+                this.ui.elements.gameOverAnalysis.innerHTML = analysisText;
+
+                this.chartManager.updateDistributionChart('gameOver', this.state.survivalState.damageLog, this.state.nValue, this.state.selectedWeapon);
+                this.ui.toggleModal('survivalGameOverModal', true);
+            }
+
+            restartSurvival() {
+                this.ui.toggleModal('survivalGameOverModal', false);
+                this.ui.elements.survivalGameScreen.classList.add('hidden');
+                this.ui.elements.survivalStartScreen.classList.remove('hidden');
+                this.ui.elements.actionButtons.querySelector('[data-action="start-survival"]').classList.remove('hidden');
+                this.ui.elements.actionButtons.querySelector('#survival-attack-controls').style.display = 'none';
+                this.ui.elements.combatLog.innerHTML = '';
+            }
+
+            startMission() {
+                this.stopAutoAction();
+                this.state.missionState = {
+                    monster: { ...CONFIG.ASSETS.MONSTERS.GOLEM_KING, maxHp: CONFIG.MISSION_HP, currentHp: CONFIG.MISSION_HP, asset: CONFIG.ASSETS.MONSTERS.GOLEM_KING },
+                    turnsLeft: CONFIG.MISSION_TURNS,
+                    damageLog: []
+                };
+                this.ui.elements.missionStartScreen.classList.add('hidden');
+                this.ui.elements.missionGameScreen.classList.remove('hidden');
+                this.ui.elements.actionButtons.querySelector('[data-action="start-mission"]').classList.add('hidden');
+                this.ui.elements.actionButtons.querySelector('#mission-attack-controls').style.display = 'grid';
+                this.chartManager.updateDistributionChart('liveMission', [], this.state.nValue, this.state.selectedWeapon);
+                this.updateMissionUI();
+                this.ui.addLog('missionCombatLog', '討伐ミッション開始！', 'text-purple-400');
+            }
+
+            missionAttack() {
+                if (this.state.isActionLocked) return;
+                const state = this.state.missionState;
+                if (state.turnsLeft <= 0) return;
+                
+                this.lockAction();
+                
+                state.turnsLeft--;
+                
+                const baseDamage = this.calculateMeanDamage();
+                const bonus = Utils.calculateNormalityBonus(state.damageLog, false);
+                const finalDamage = baseDamage * bonus;
+                state.damageLog.push(baseDamage);
+                state.monster.currentHp -= finalDamage;
+
+                if (bonus > 1.1) this.ui.addLog('missionCombatLog', `正規分布ボーナス！ ダメージが ${bonus.toFixed(2)}倍に！`, 'bonus-text');
+                this.ui.addLog('missionCombatLog', `残り${state.turnsLeft+1}ターン: ${finalDamage.toFixed(1)} のダメージ！`, 'text-blue-300');
+                
+                this.updateMissionUI();
+                this.chartManager.updateDistributionChart('liveMission', state.damageLog, this.state.nValue, this.state.selectedWeapon);
+
+                if (state.monster.currentHp <= 0 || state.turnsLeft <= 0) {
+                    this.missionResult(state.monster.currentHp <= 0);
+                }
+            }
+
+            updateMissionUI() {
+                const state = this.state.missionState;
+                const { skewness, kurtosis } = Utils.calculateDistributionStats(state.damageLog);
+                const bonus = Utils.calculateNormalityBonus(state.damageLog, false);
+                this.ui.updateCombatStats('mission', bonus, skewness, kurtosis);
+                this.ui.elements.turnCounter.textContent = state.turnsLeft;
+                this.ui.updateCombatantUI('missionMonster', state.monster);
+            }
+
+            missionResult(isWin) {
+                this.stopAutoAction();
+                this.chartManager.updateDistributionChart('missionResult', this.state.missionState.damageLog, this.state.nValue, this.state.selectedWeapon);
+                const titleEl = this.ui.elements.missionResultTitle;
+                const borderEl = this.ui.elements.missionResultBorder;
+                if (isWin) {
+                    titleEl.textContent = 'MISSION COMPLETE!';
+                    titleEl.className = 'text-5xl font-bold font-game mb-4 text-green-400';
+                    borderEl.className = 'bg-gray-800 rounded-2xl p-8 max-w-2xl w-full text-center border-4 border-green-400';
+                } else {
+                    titleEl.textContent = 'MISSION FAILED';
+                    titleEl.className = 'text-5xl font-bold font-game mb-4 text-red-500';
+                    borderEl.className = 'bg-gray-800 rounded-2xl p-8 max-w-2xl w-full text-center border-4 border-red-500';
+                }
+                this.ui.toggleModal('missionResultModal', true);
+            }
+
+            restartMission() {
+                this.ui.toggleModal('missionResultModal', false);
+                this.ui.elements.missionGameScreen.classList.add('hidden');
+                this.ui.elements.missionStartScreen.classList.remove('hidden');
+                this.ui.elements.actionButtons.querySelector('[data-action="start-mission"]').classList.remove('hidden');
+                this.ui.elements.actionButtons.querySelector('#mission-attack-controls').style.display = 'none';
+                this.ui.elements.missionCombatLog.innerHTML = '';
+            }
+
+            calculateMeanDamage() {
+                const probs = CONFIG.DICE_DISTRIBUTIONS[this.state.selectedWeapon].probs;
+                let currentSample = Array.from({ length: this.state.nValue }, () => Utils.rollWeightedDie(probs));
+                return currentSample.reduce((a, b) => a + b, 0) / this.state.nValue;
+            }
+        }
+
+        // =================================================================================
+        // APP INITIALIZATION
+        // =================================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new Game();
+            game.initialize();
         });
-
-
-        // --- Initial Call ---
-        initializeCharts();
-        setInitialImages();
-        setLegend();
-        renderNButtons();
-        switchMode('introduction'); // Start with the introduction tab
-        updateWeaponDisplay();
-        // Set initial mission text
-        document.getElementById('mission-hp-display').textContent = MISSION_HP;
-        document.getElementById('mission-turn-display').textContent = MISSION_TURNS;
-    });
     </script>
 </body>
 </html>
