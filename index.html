@@ -357,7 +357,8 @@
                 ICONS: {
                     n1: './assets/icon-n1.png',
                     n2: './assets/icon-n2.png',
-                    n30: './assets/icon-n30.png'
+                    n30: './assets/icon-n30.png',
+                    n100: './assets/icon-n100.png' // Added icon for custom input
                 }
             },
             DICE_DISTRIBUTIONS: {
@@ -639,13 +640,13 @@
                         <button data-action="reset" class="action-btn w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">リセット</button>`;
                 } else if (game.state.currentMode === 'survival') {
                     buttonsHtml = `<button data-action="start-survival" class="action-btn w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl mt-4">ゲーム開始！</button>
-                                   <div id="survival-attack-controls" class="grid-cols-2 gap-3 mt-4 hidden">
+                                   <div id="survival-attack-controls" class="grid grid-cols-2 gap-3 mt-4 hidden">
                                        <button data-action="survival-attack" class="action-btn w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl">攻撃！</button>
                                        <button data-action="survival-auto" class="action-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl">自動で攻撃</button>
                                    </div>`;
                 } else if (game.state.currentMode === 'mission') {
                     buttonsHtml = `<button data-action="start-mission" class="action-btn w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl mt-4">ミッション開始！</button>
-                                   <div id="mission-attack-controls" class="grid-cols-2 gap-3 mt-4 hidden">
+                                   <div id="mission-attack-controls" class="grid grid-cols-2 gap-3 mt-4 hidden">
                                        <button data-action="mission-attack" class="action-btn w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl">攻撃！</button>
                                        <button data-action="mission-auto" class="action-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl">自動で攻撃</button>
                                    </div>`;
@@ -684,13 +685,24 @@
                     container.appendChild(button);
                 });
                 
+                const customNWrapper = document.createElement('div');
+                customNWrapper.className = 'n-button';
+
+                const customNIcon = document.createElement('img');
+                customNIcon.src = CONFIG.ASSETS.ICONS.n100;
+                customNIcon.alt = 'custom n';
+                customNIcon.className = 'w-5 h-5';
+                customNWrapper.appendChild(customNIcon);
+
                 const customNInput = document.createElement('input');
                 customNInput.type = 'number';
                 customNInput.min = 1;
                 customNInput.max = CONFIG.MAX_N;
                 customNInput.placeholder = 'n=?';
-                customNInput.className = 'n-button w-24 text-center';
-                container.appendChild(customNInput);
+                customNInput.className = 'bg-transparent text-center w-full focus:outline-none p-0 m-0 border-0';
+                
+                customNWrapper.appendChild(customNInput);
+                container.appendChild(customNWrapper);
             }
 
             updateNSelection(nValue) {
