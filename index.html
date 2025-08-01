@@ -46,7 +46,7 @@
         .n-button:hover {
             background-color: #4b5563;
         }
-        .n-button.n-button-selected {
+        .n-button.n-button-selected, .n-input-wrapper.n-button-selected {
             background-color: #3b82f6;
             color: white;
             border-color: #60a5fa;
@@ -173,22 +173,28 @@
                 <div id="right-panels" class="lg:col-span-2">
                     <!-- Simulation Mode Panel -->
                     <div id="simulation-mode-panel" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
-                        <h2 class="text-2xl font-bold mb-2 font-game text-yellow-400 flex items-center gap-2">シミュレーション記録 <button id="sim-col-btn" class="column-btn text-lg">？</button></h2>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4 text-center">
+                        <h2 class="text-2xl font-bold mb-4 font-game text-yellow-400 flex items-center gap-2">シミュレーション記録 <button id="sim-col-btn" class="column-btn text-lg">？</button></h2>
+                        
+                        <div class="w-full h-80 mb-4"><canvas id="results-histogram"></canvas></div>
+                        <div id="sim-legend" class="mb-4 text-xs text-gray-400 flex flex-wrap justify-center items-center gap-x-4 gap-y-1"></div>
+
+                        <div id="simulation-log" class="h-24 bg-gray-900 rounded-lg p-2 text-left overflow-y-auto text-base mb-4"></div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
                             <div class="bg-gray-900 p-2 rounded-lg"><div class="text-xs text-gray-400">総試行回数</div><div id="total-trials" class="text-xl font-bold text-yellow-400">0</div></div>
                             <div class="bg-gray-900 p-2 rounded-lg"><div class="text-xs text-gray-400 flex items-center justify-center gap-1">出目の平均 <button id="mean-col-btn" class="column-btn text-xs">？</button></div><div id="mean-of-means" class="text-xl font-bold text-yellow-400">N/A</div></div>
                             <div class="bg-gray-900 p-2 rounded-lg"><div class="text-xs text-gray-400 flex items-center justify-center gap-1">ばらつき <button id="stddev-col-btn" class="column-btn text-xs">？</button></div><div id="std-dev" class="text-xl font-bold text-yellow-400">N/A</div></div>
                              <div class="bg-gray-900 p-2 rounded-lg">
-                                <div class="text-xs text-gray-400">分布の評価</div>
+                                <div class="text-xs text-gray-400 flex items-center justify-center gap-1">
+                                    分布の評価 <button id="dist-eval-col-btn" class="column-btn text-xs">？</button>
+                                </div>
                                 <div class="flex justify-center gap-2 mt-1">
                                     <p class="text-xs">歪度: <span id="sim-skew-display" class="font-bold">0.00</span></p>
                                     <p class="text-xs">尖度: <span id="sim-kurt-display" class="font-bold">3.00</span></p>
                                 </div>
+                                <p class="text-xs text-gray-500 mt-1 italic">(理想: 歪度0, 尖度3)</p>
                             </div>
                         </div>
-                        <div id="simulation-log" class="h-24 bg-gray-900 rounded-lg p-2 text-left overflow-y-auto text-base mb-4"></div>
-                        <div class="w-full h-80"><canvas id="results-histogram"></canvas></div>
-                        <div id="sim-legend" class="mt-4 text-xs text-gray-400 flex flex-wrap justify-center items-center gap-x-4 gap-y-1"></div>
                     </div>
 
                     <!-- Survival Mode Panel -->
@@ -208,7 +214,10 @@
                                 <div class="text-right">
                                     <p class="text-sm">歪度: <span id="survival-skew-display" class="font-bold">0.00</span></p>
                                     <p class="text-sm">尖度: <span id="survival-kurt-display" class="font-bold">3.00</span></p>
-                                    <p class="text-lg">ボーナス: <span id="survival-bonus-display" class="font-bold">x1.00</span></p>
+                                    <div class="text-lg flex items-center justify-end gap-1">
+                                        <span>ボーナス: <span id="survival-bonus-display" class="font-bold">x1.00</span></span>
+                                        <button id="survival-bonus-col-btn" class="column-btn text-xs">？</button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex justify-around items-end mb-4">
@@ -243,11 +252,17 @@
                         </div>
                         <div id="mission-game-screen" class="hidden text-center">
                              <div class="flex justify-between items-start mb-2">
-                                <h2 class="text-2xl font-bold font-game text-purple-400">残り <span id="turn-counter">30</span> ターン</h2>
+                                <div>
+                                    <h2 class="text-2xl font-bold font-game text-purple-400">残り <span id="turn-counter">30</span> ターン</h2>
+                                    <p class="text-sm text-left text-gray-400">総攻撃回数: <span id="mission-trial-count">0</span></p>
+                                </div>
                                 <div class="text-right">
                                     <p class="text-sm">歪度: <span id="mission-skew-display" class="font-bold">0.00</span></p>
                                     <p class="text-sm">尖度: <span id="mission-kurt-display" class="font-bold">3.00</span></p>
-                                    <p class="text-lg">ダメージボーナス: <span id="mission-bonus-display" class="font-bold">x1.00</span></p>
+                                    <div class="text-lg flex items-center justify-end gap-1">
+                                        <span>ダメージボーナス: <span id="mission-bonus-display" class="font-bold">x1.00</span></span>
+                                        <button id="mission-bonus-col-btn" class="column-btn text-xs">？</button>
+                                    </div>
                                 </div>
                              </div>
                             <div class="flex justify-around items-end mb-4">
@@ -293,8 +308,8 @@
     </div>
 
     <div id="column-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 rounded-2xl p-8 max-w-lg w-full text-center border-2 border-cyan-400">
-            <p id="column-text" class="text-xl"></p>
+        <div class="bg-gray-800 rounded-2xl p-8 max-w-lg w-full text-left border-2 border-cyan-400">
+            <p id="column-text" class="text-xl whitespace-pre-wrap"></p>
             <button id="close-column-btn" class="mt-6 w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg transition">閉じる</button>
         </div>
     </div>
@@ -358,7 +373,7 @@
                     n1: './assets/icon-n1.png',
                     n2: './assets/icon-n2.png',
                     n30: './assets/icon-n30.png',
-                    n100: './assets/icon-n100.png' // Added icon for custom input
+                    n100: './assets/icon-n100.png'
                 }
             },
             DICE_DISTRIBUTIONS: {
@@ -373,7 +388,11 @@
                 survival: "君の統計学の知識が生存の鍵だ。分布を整えてボーナスを稼ぎ、どこまで生き残れるか挑戦しよう！",
                 mission: "限られたターンの中で、いかに分布を整えて大ダメージを与えるかが攻略の鍵となります。",
                 mean: "ダメージ平均は、これまでの君の全攻撃の平均値だ。nを大きくすると、一回ごとのダメージがこの値に近づいていくぞ。",
-                stddev: "ばらつき（標準偏差）は、攻撃ダメージがどれだけ平均から離れているかを示す。この値が小さいほど、攻撃が安定している証拠だ！"
+                stddev: "ばらつき（標準偏差）は、攻撃ダメージがどれだけ平均から離れているかを示す。この値が小さいほど、攻撃が安定している証拠だ！",
+                distEval: "● 歪度 (わいど)\n分布が左右どちらに歪んでいるかを示す指標です。0なら完全に左右対称です。\n\n● 尖度 (せんど)\n分布の頂点がどれだけ尖っているかを示す指標です。正規分布では3が基準となります。",
+                simAction: "n個のサイコロを同時に振ることを「試行」といいます。1回ずつ投げると、まるでサイコロを振っている感覚を味わえます。一気に100回試行したり、自動で試行してみるのも楽しいですよ。",
+                survivalBonus: "ボーナスとは、サイコロの分布が正規分布に近いと攻撃力や回復量が上がります。",
+                missionBonus: "ボーナスとは、サイコロの分布が正規分布に近いと攻撃力が上がります。"
             }
         };
 
@@ -560,12 +579,16 @@
                     'survival-game-over-modal', 'final-score', 'game-over-analysis', 'game-over-chart', 'restart-survival-btn',
                     'mission-result-modal', 'mission-result-border', 'mission-result-title', 'mission-result-chart',
                     'restart-mission-btn', 'column-modal', 'column-text', 'close-column-btn', 'weapon-col-btn', 'n-col-btn',
-                    'sim-col-btn', 'survival-col-btn', 'mission-col-btn', 'mean-col-btn', 'stddev-col-btn', 'mission-hp-display',
-                    'mission-turn-display', 'intro-hero-image'
+                    'sim-col-btn', 'survival-col-btn', 'mission-col-btn', 'mean-col-btn', 'stddev-col-btn', 'dist-eval-col-btn',
+                    'mission-hp-display', 'mission-turn-display', 'intro-hero-image', 'survival-bonus-col-btn', 'mission-bonus-col-btn',
+                    'mission-trial-count'
                 ];
                 const elements = {};
                 ids.forEach(id => {
-                    elements[id.replace(/-(\w)/g, (match, p1) => p1.toUpperCase())] = document.getElementById(id);
+                    const el = document.getElementById(id);
+                    if (el) {
+                        elements[id.replace(/-(\w)/g, (match, p1) => p1.toUpperCase())] = el;
+                    }
                 });
                 return elements;
             }
@@ -578,6 +601,7 @@
                 this.elements.missionModeBtn.addEventListener('click', () => game.switchMode('mission'));
 
                 this.elements.weaponSelector.addEventListener('change', (e) => game.handleWeaponChange(e.target.value));
+                
                 this.elements.nSelector.addEventListener('click', (e) => {
                     const button = e.target.closest('button');
                     if (button && button.dataset.n) {
@@ -587,6 +611,11 @@
                 this.elements.nSelector.addEventListener('change', (e) => {
                     if (e.target.tagName === 'INPUT') {
                         game.handleNChange(parseInt(e.target.value, 10));
+                    }
+                });
+                this.elements.nSelector.addEventListener('focusin', (e) => {
+                    if (e.target.tagName === 'INPUT') {
+                        this.updateNSelection(e.target.value, true);
                     }
                 });
 
@@ -631,13 +660,13 @@
                 let buttonsHtml = '';
                 if (game.state.currentMode === 'simulation') {
                     buttonsHtml = `
-                        <h3 class="text-lg font-bold mb-3 text-cyan-300">3. 試行する</h3>
-                        <div class="grid grid-cols-2 gap-3 mb-3">
-                            <button data-action="run-1" class="action-btn w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition">1回 試行</button>
-                            <button data-action="run-100" class="action-btn w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition">100回 試行</button>
-                            <button data-action="run-auto" class="action-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition col-span-2">自動で試行</button>
-                        </div>
-                        <button data-action="reset" class="action-btn w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">リセット</button>`;
+                        <h3 class="text-lg font-bold mb-3 text-cyan-300 flex items-center gap-2">3. 試行する <button id="sim-action-col-btn" class="column-btn">？</button></h3>
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <button data-action="run-1" class="action-btn flex-1 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-3 rounded-lg transition text-sm">1回</button>
+                            <button data-action="run-100" class="action-btn flex-1 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-3 rounded-lg transition text-sm">100回</button>
+                            <button data-action="run-auto" class="action-btn flex-grow bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-3 rounded-lg transition text-sm">自動</button>
+                            <button data-action="reset" class="action-btn bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg transition text-sm">リセット</button>
+                        </div>`;
                 } else if (game.state.currentMode === 'survival') {
                     buttonsHtml = `<button data-action="start-survival" class="action-btn w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition text-xl mt-4">ゲーム開始！</button>
                                    <div id="survival-attack-controls" class="grid grid-cols-2 gap-3 mt-4 hidden">
@@ -658,6 +687,11 @@
                         game.handleAction(button.dataset.action);
                     }
                 });
+                // Add listener for the new column button
+                const simActionColBtn = document.getElementById('sim-action-col-btn');
+                if (simActionColBtn) {
+                   simActionColBtn.addEventListener('click', () => this.showColumn(CONFIG.COLUMN_TEXTS.simAction));
+                }
             }
             
             renderNButtons() {
@@ -686,7 +720,7 @@
                 });
                 
                 const customNWrapper = document.createElement('div');
-                customNWrapper.className = 'n-button';
+                customNWrapper.className = 'n-input-wrapper n-button';
 
                 const customNIcon = document.createElement('img');
                 customNIcon.src = CONFIG.ASSETS.ICONS.n100;
@@ -705,15 +739,21 @@
                 container.appendChild(customNWrapper);
             }
 
-            updateNSelection(nValue) {
+            updateNSelection(nValue, isFromInput = false) {
                 const container = this.elements.nSelector;
                 container.querySelectorAll('button').forEach(btn => btn.classList.remove('n-button-selected'));
+                const inputWrapper = container.querySelector('.n-input-wrapper');
+                inputWrapper.classList.remove('n-button-selected');
+
                 const matchingButton = container.querySelector(`button[data-n='${nValue}']`);
-                if (matchingButton) {
+                if (matchingButton && !isFromInput) {
                     matchingButton.classList.add('n-button-selected');
                     container.querySelector('input').value = '';
                 } else {
-                    container.querySelector('input').value = nValue;
+                    inputWrapper.classList.add('n-button-selected');
+                    if (!isFromInput) {
+                       container.querySelector('input').value = nValue;
+                    }
                 }
             }
 
@@ -742,8 +782,9 @@
                 const bonusEl = this.elements[`${mode}BonusDisplay`];
                 const skewEl = this.elements[`${mode}SkewDisplay`];
                 const kurtEl = this.elements[`${mode}KurtDisplay`];
-                if (mode === 'survival') {
-                    this.elements.survivalTrialCount.textContent = trialCount;
+                const trialCountEl = this.elements[`${mode}TrialCount`];
+                if (trialCountEl) {
+                    trialCountEl.textContent = trialCount;
                 }
                 this.updateStatDisplay(bonusEl, bonus, skewEl, skewness, kurtEl, kurtosis);
             }
@@ -751,14 +792,14 @@
             updateStatDisplay(bonusEl, bonus, skewEl, skew, kurtEl, kurt) {
                 if (bonusEl) {
                     bonusEl.textContent = `x${bonus.toFixed(2)}`;
-                    bonusEl.className = bonus > 1.1 ? 'font-bold bonus-text' : (bonus < 0.9 ? 'font-bold penalty-text' : 'font-bold');
+                    bonusEl.className = 'font-bold ' + (bonus > 1.1 ? 'bonus-text' : (bonus < 0.9 ? 'penalty-text' : ''));
                 }
                 skewEl.textContent = skew.toFixed(2);
                 kurtEl.textContent = kurt.toFixed(2);
                 const skewError = Math.abs(skew);
-                skewEl.className = skewError < 0.5 ? 'font-bold stat-good' : (skewError < 1 ? 'font-bold stat-ok' : 'font-bold stat-bad');
+                skewEl.className = 'font-bold ' + (skewError < 0.5 ? 'stat-good' : (skewError < 1 ? 'stat-ok' : 'stat-bad'));
                 const kurtError = Math.abs(kurt - 3);
-                kurtEl.className = kurtError < 0.5 ? 'font-bold stat-good' : (kurtError < 1 ? 'font-bold stat-ok' : 'font-bold stat-bad');
+                kurtEl.className = 'font-bold ' + (kurtError < 0.5 ? 'stat-good' : (kurtError < 1 ? 'stat-ok' : 'stat-bad'));
             }
 
             updateCombatantUI(type, state) {
@@ -823,7 +864,7 @@
                     selectedWeapon: 'normalSword',
                     nValue: CONFIG.INITIAL_N,
                     isActionLocked: false,
-                    autoRunInterval: null,
+                    isAutoRunning: false,
                     simData: [],
                     survivalState: {},
                     missionState: {}
@@ -883,15 +924,8 @@
 
             lockAction() {
                 this.state.isActionLocked = true;
-                const manualButtons = this.ui.elements.actionButtons.querySelectorAll('[data-action$="-attack"], [data-action="run-1"], [data-action="run-100"]');
-                manualButtons.forEach(btn => btn.disabled = true);
-
                 setTimeout(() => {
                     this.state.isActionLocked = false;
-                    let gameIsActive = this.isGameActive();
-                    if (gameIsActive) {
-                        manualButtons.forEach(btn => btn.disabled = false);
-                    }
                 }, CONFIG.ACTION_COOLDOWN);
             }
             
@@ -905,17 +939,38 @@
                 return true; // Sim mode is always active
             }
 
+            getNormalityFeedback(data) {
+                if (data.length < 10) return { feedback: '', colorClass: 'text-yellow-300' };
+                
+                const { skewness, kurtosis } = Utils.calculateDistributionStats(data);
+                if (Math.abs(skewness) < 0.5 && Math.abs(kurtosis - 3) < 0.5) {
+                    return { feedback: ' 正規分布に近いぞ！', colorClass: 'bonus-text' };
+                } else if (Math.abs(skewness) > 1.5 || Math.abs(kurtosis - 3) > 1.5) {
+                    return { feedback: ' 分布が乱れている！', colorClass: 'penalty-text' };
+                }
+                return { feedback: '', colorClass: 'text-yellow-300' };
+            }
+
             runSimulation(numTrials) {
                 if (this.state.isActionLocked) return;
+                this.lockAction();
+                
                 for (let i = 0; i < numTrials; i++) {
                     const damage = this.calculateMeanDamage();
                     this.state.simData.push(damage);
+                    
                     if (numTrials === 1) {
-                        this.ui.addLog('simulationLog', `${damage.toFixed(2)} の出目の平均！`, 'text-yellow-300');
+                        let feedback = '';
+                        let colorClass = 'text-yellow-300';
+                        if (this.state.simData.length % 3 === 0) {
+                            const result = this.getNormalityFeedback(this.state.simData);
+                            feedback = result.feedback;
+                            colorClass = result.colorClass;
+                        }
+                        this.ui.addLog('simulationLog', `${damage.toFixed(2)} の出目の平均！${feedback}`, colorClass);
                     }
                 }
                 this.updateSimUI();
-                this.lockAction();
             }
 
             updateSimUI() {
@@ -930,55 +985,67 @@
                 this.ui.elements.simulationLog.innerHTML = '';
                 this.updateSimUI();
             }
+            
+            async autoActionLoop(actionFn) {
+                if (!this.state.isAutoRunning) return;
+                
+                actionFn();
+                
+                await new Promise(resolve => setTimeout(resolve, CONFIG.ACTION_COOLDOWN + 50));
+                
+                if (this.isGameActive()) {
+                    this.autoActionLoop(actionFn);
+                } else {
+                    this.stopAutoAction();
+                }
+            }
 
             toggleAutoSim() {
-                const btn = this.ui.elements.actionButtons.querySelector('[data-action="run-auto"]');
-                if (this.state.autoRunInterval) {
+                if (this.state.isAutoRunning) {
                     this.stopAutoAction();
                 } else {
-                    this.state.autoRunInterval = setInterval(() => this.runSimulation(100), 50);
+                    this.state.isAutoRunning = true;
+                    const btn = this.ui.elements.actionButtons.querySelector('[data-action="run-auto"]');
                     btn.textContent = '停止';
                     btn.classList.replace('bg-green-500', 'bg-pink-500');
+                    this.autoActionLoop(() => this.runSimulation(100));
                 }
             }
             
             toggleAutoAttack() {
-                const btn = this.ui.elements.actionButtons.querySelector(`[data-action="${this.state.currentMode}-auto"]`);
-                const manualBtn = this.ui.elements.actionButtons.querySelector(`[data-action="${this.state.currentMode}-attack"]`);
-
-                if (this.state.autoRunInterval) {
+                if (this.state.isAutoRunning) {
                     this.stopAutoAction();
                 } else {
-                    const attackFunction = this.state.currentMode === 'survival' ? () => this.survivalAttack() : () => this.missionAttack();
-                    this.state.autoRunInterval = setInterval(attackFunction, CONFIG.ACTION_COOLDOWN);
+                    this.state.isAutoRunning = true;
+                    const btn = this.ui.elements.actionButtons.querySelector(`[data-action="${this.state.currentMode}-auto"]`);
+                    const manualBtn = this.ui.elements.actionButtons.querySelector(`[data-action="${this.state.currentMode}-attack"]`);
                     btn.textContent = '停止';
                     btn.classList.replace('bg-green-500', 'bg-pink-500');
                     if(manualBtn) manualBtn.disabled = true;
+
+                    const attackFunction = this.state.currentMode === 'survival' ? () => this.survivalAttack() : () => this.missionAttack();
+                    this.autoActionLoop(attackFunction);
                 }
             }
 
             stopAutoAction() {
-                if (this.state.autoRunInterval) {
-                    clearInterval(this.state.autoRunInterval);
-                    this.state.autoRunInterval = null;
-                    
-                    ['sim', 'survival', 'mission'].forEach(mode => {
-                        const autoBtnSelector = mode === 'sim' ? 'run-auto' : `${mode}-auto`;
-                        const autoBtn = this.ui.elements.actionButtons.querySelector(`[data-action="${autoBtnSelector}"]`);
-                        if (autoBtn) {
-                            autoBtn.textContent = mode === 'sim' ? '自動で試行' : '自動で攻撃';
-                            autoBtn.classList.replace('bg-pink-500', 'bg-green-500');
-                        }
+                this.state.isAutoRunning = false;
+                ['sim', 'survival', 'mission'].forEach(mode => {
+                    const autoBtnSelector = mode === 'sim' ? 'run-auto' : `${mode}-auto`;
+                    const autoBtn = this.ui.elements.actionButtons.querySelector(`[data-action="${autoBtnSelector}"]`);
+                    if (autoBtn) {
+                        autoBtn.textContent = mode === 'sim' ? '自動' : '自動で攻撃';
+                        autoBtn.classList.replace('bg-pink-500', 'bg-green-500');
+                    }
 
-                        const manualBtnSelector = mode === 'sim' ? null : `${mode}-attack`;
-                        if(manualBtnSelector) {
-                            const manualBtn = this.ui.elements.actionButtons.querySelector(`[data-action="${manualBtnSelector}"]`);
-                            if(manualBtn && this.isGameActive()) manualBtn.disabled = false;
-                        }
-                    });
-                     const simRunButtons = this.ui.elements.actionButtons.querySelectorAll('[data-action="run-1"], [data-action="run-100"]');
-                     if (simRunButtons) simRunButtons.forEach(b => b.disabled = false);
-                }
+                    const manualBtnSelector = mode === 'sim' ? null : `${mode}-attack`;
+                    if(manualBtnSelector) {
+                        const manualBtn = this.ui.elements.actionButtons.querySelector(`[data-action="${manualBtnSelector}"]`);
+                        if(manualBtn && this.isGameActive()) manualBtn.disabled = false;
+                    }
+                });
+                 const simRunButtons = this.ui.elements.actionButtons.querySelectorAll('[data-action="run-1"], [data-action="run-100"]');
+                 if (simRunButtons) simRunButtons.forEach(b => b.disabled = false);
             }
 
             startSurvival() {
@@ -1015,17 +1082,23 @@
 
             survivalAttack() {
                 if (this.state.isActionLocked) return;
-                const state = this.state.survivalState;
-                
                 this.lockAction();
                 
+                const state = this.state.survivalState;
                 const baseDamage = this.calculateMeanDamage();
                 const bonus = Utils.calculateNormalityBonus(state.damageLog, false);
                 const finalDamage = baseDamage * bonus;
                 state.damageLog.push(baseDamage);
                 state.monster.currentHp -= finalDamage;
 
-                this.ui.addLog('combatLog', `勇者の攻撃！ ${baseDamage.toFixed(1)} のダメージ！`, 'text-blue-300');
+                let feedback = '';
+                let colorClass = 'text-blue-300';
+                if (state.damageLog.length % 3 === 0) {
+                    const result = this.getNormalityFeedback(state.damageLog);
+                    feedback = result.feedback;
+                }
+                this.ui.addLog('combatLog', `勇者の攻撃！ ${baseDamage.toFixed(1)} のダメージ！${feedback}`, colorClass);
+
                 if (bonus > 1.1) this.ui.addLog('combatLog', `正規分布ボーナス！ ダメージが ${bonus.toFixed(2)}倍に！ (最終: ${finalDamage.toFixed(1)})`, 'bonus-text');
                 
                 this.updateSurvivalUI();
@@ -1121,8 +1194,15 @@
                 state.damageLog.push(baseDamage);
                 state.monster.currentHp -= finalDamage;
 
+                let feedback = '';
+                let colorClass = 'text-blue-300';
+                if (state.damageLog.length % 3 === 0) {
+                    const result = this.getNormalityFeedback(state.damageLog);
+                    feedback = result.feedback;
+                }
+                this.ui.addLog('missionCombatLog', `残り${state.turnsLeft+1}ターン: ${finalDamage.toFixed(1)} のダメージ！${feedback}`, colorClass);
+
                 if (bonus > 1.1) this.ui.addLog('missionCombatLog', `正規分布ボーナス！ ダメージが ${bonus.toFixed(2)}倍に！`, 'bonus-text');
-                this.ui.addLog('missionCombatLog', `残り${state.turnsLeft+1}ターン: ${finalDamage.toFixed(1)} のダメージ！`, 'text-blue-300');
                 
                 this.updateMissionUI();
                 this.chartManager.updateDistributionChart('liveMission', state.damageLog, this.state.nValue, this.state.selectedWeapon);
@@ -1136,7 +1216,7 @@
                 const state = this.state.missionState;
                 const { skewness, kurtosis } = Utils.calculateDistributionStats(state.damageLog);
                 const bonus = Utils.calculateNormalityBonus(state.damageLog, false);
-                this.ui.updateCombatStats('mission', bonus, skewness, kurtosis);
+                this.ui.updateCombatStats('mission', bonus, skewness, kurtosis, state.damageLog.length);
                 this.ui.elements.turnCounter.textContent = state.turnsLeft;
                 this.ui.updateCombatantUI('missionMonster', state.monster);
             }
