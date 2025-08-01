@@ -358,7 +358,6 @@
                     n1: './assets/icon-n1.png',
                     n2: './assets/icon-n2.png',
                     n30: './assets/icon-n30.png'
-                    n100: './assets/icon-n100.png'
                 }
             },
             DICE_DISTRIBUTIONS: {
@@ -685,27 +684,13 @@
                     container.appendChild(button);
                 });
                 
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'n-button flex items-center gap-2'; // 他のボタンとデザインを統一
-                    
-                    // 画像
-                    const customIcon = document.createElement('img');
-                    customIcon.src = CONFIG.ASSETS.ICONS.n100;  // ← 便宜上 n100.png を使う
-                    customIcon.alt = 'n = ?';
-                    customIcon.className = 'w-5 h-5 pointer-events-none';
-                    wrapper.appendChild(customIcon);
-                    
-                    // input要素
-                    const customNInput = document.createElement('input');
-                    customNInput.type = 'number';
-                    customNInput.min = 1;
-                    customNInput.max = CONFIG.MAX_N;
-                    customNInput.placeholder = 'n=?';
-                    customNInput.className = 'text-center bg-transparent border-none outline-none w-12 pointer-events-auto';
-                    wrapper.appendChild(customNInput);
-                    
-                    container.appendChild(wrapper);
-
+                const customNInput = document.createElement('input');
+                customNInput.type = 'number';
+                customNInput.min = 1;
+                customNInput.max = CONFIG.MAX_N;
+                customNInput.placeholder = 'n=?';
+                customNInput.className = 'n-button w-24 text-center';
+                container.appendChild(customNInput);
             }
 
             updateNSelection(nValue) {
